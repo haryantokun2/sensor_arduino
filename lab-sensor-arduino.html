@@ -1,0 +1,1658 @@
+<title>Lab Sensor Arduino</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f1;--panel:#fff;--panel2:#f8f9f6;--ink:#18211e;--mute:#5f6a65;--line:#dde2dc;--acc:#0b7a6b;--acc-soft:#e1f1ed;--acc2:#c4561b;--sig1:#0b7a6b;--sig2:#c4561b;--sig3:#6b4fbb;--board:#0e6f7c;--board2:#0a5964;--code:#f1f3ef;--ok:#1d7a3a;--ok-soft:#e3f3e6;--no:#8a6d12;--no-soft:#f7f0d9;--warn:#b42318;--warn-soft:#fdecea;--w5v:#d92d20;--wgnd:#2b2f2e;--w33:#e98a15;--wa:#c99a06;--wd:#2366d1;--wsda:#1f8fbf;--wscl:#a0479f;--kw:#8b3fb8;--str:#0f7b3e;--cm:#8a948f;--num:#b2510f;--pp:#0f6a8a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1312;--panel:#161d1b;--panel2:#1b2321;--ink:#e5ebe7;--mute:#97a39d;--line:#2a3431;--acc:#3fc1a8;--acc-soft:#173430;--acc2:#f08a4b;--sig1:#3fc1a8;--sig2:#f08a4b;--sig3:#a891f0;--board:#11707d;--board2:#0b5560;--code:#121816;--ok:#5ccf7f;--ok-soft:#173523;--no:#e2bf55;--no-soft:#332c14;--warn:#ff7b6e;--warn-soft:#3a1916;--w5v:#ff5a4d;--wgnd:#c9d1cd;--w33:#ffa53d;--wa:#e7c13a;--wd:#5b9bff;--wsda:#45b8e6;--wscl:#d07ad0;--kw:#c792ea;--str:#7fd49b;--cm:#6f7b76;--num:#f3a46b;--pp:#5cc4e6}}
+:root[data-theme="dark"]{--bg:#0e1312;--panel:#161d1b;--panel2:#1b2321;--ink:#e5ebe7;--mute:#97a39d;--line:#2a3431;--acc:#3fc1a8;--acc-soft:#173430;--acc2:#f08a4b;--sig1:#3fc1a8;--sig2:#f08a4b;--sig3:#a891f0;--board:#11707d;--board2:#0b5560;--code:#121816;--ok:#5ccf7f;--ok-soft:#173523;--no:#e2bf55;--no-soft:#332c14;--warn:#ff7b6e;--warn-soft:#3a1916;--w5v:#ff5a4d;--wgnd:#c9d1cd;--w33:#ffa53d;--wa:#e7c13a;--wd:#5b9bff;--wsda:#45b8e6;--wscl:#d07ad0;--kw:#c792ea;--str:#7fd49b;--cm:#6f7b76;--num:#f3a46b;--pp:#5cc4e6}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "Plus Jakarta Sans",system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+a{color:var(--acc)}
+.wrap{max-width:1320px;margin:0 auto}
+header.top{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+header.top h1{font-size:26px;line-height:1.15;margin:0;font-weight:800;letter-spacing:-.02em}
+header.top p{margin:4px 0 0;color:var(--mute);font-size:14px;max-width:760px}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:7px 12px;font:600 13px "Plus Jakarta Sans",sans-serif;cursor:pointer}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+:root[data-theme="dark"] .btn.pri{color:#0e1312}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.pri{color:#0e1312}}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
+.side input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--ink);font:inherit}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:999px;padding:3px 10px;font:600 12px "Plus Jakarta Sans",sans-serif;cursor:pointer}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--panel)}
+.side select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--ink);font:inherit;font-size:13px}
+.side label.cb{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.nav{overflow:auto;margin-top:6px;padding-right:2px}
+.nav .grp{font:700 11px "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:10px 4px 4px}
+.nav a{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:13.5px}
+.nav a:hover{background:var(--panel2)}
+.nav a.on{background:var(--acc-soft);color:var(--acc);font-weight:700}
+.nav a .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--line)}
+.nav a .dot.ok{background:var(--ok)}
+.nav a .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav a .if{font-size:10.5px;color:var(--mute);font-family:"JetBrains Mono",monospace}
+.nav .special a{font-weight:600}
+.nav .cnt{font-size:12px;color:var(--mute);margin:6px 4px}
+.main{min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.shead{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.shead h2{margin:0;font-size:24px;letter-spacing:-.01em;line-height:1.2}
+.shead .sub{color:var(--mute);margin-top:2px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.bd{font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--panel2)}
+.bd.an{color:var(--sig2)}.bd.dg{color:var(--wd)}
+.stok{border-radius:12px;padding:8px 12px;font-size:13px;max-width:420px}
+.stok.ok{background:var(--ok-soft);color:var(--ok)}
+.stok.no{background:var(--no-soft);color:var(--no)}
+.stok b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:14px 0 14px;overflow-x:auto}
+.tab{border:0;background:none;color:var(--mute);font:700 14px "Plus Jakarta Sans",system-ui,sans-serif;padding:9px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.g2>*{min-width:0}
+.box{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel2)}
+.box h3{margin:0 0 8px;font-size:14px;letter-spacing:.02em}
+.ctl{margin-bottom:10px}
+.ctl .lb{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600}
+.ctl .lb span:last-child{font-family:"JetBrains Mono",monospace;color:var(--acc);font-weight:600}
+.ctl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctl select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:13px;margin-top:3px}
+canvas{display:block;width:100%}
+button,select,input{font-family:inherit}
+table.kv{width:100%;border-collapse:collapse;font-size:13px}
+table.kv td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.kv td:first-child{color:var(--mute);width:44%}
+table.kv td:last-child{font-family:"JetBrains Mono",monospace;font-size:12.5px;word-break:break-word}
+.pins{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pin{font:600 12px "JetBrains Mono",monospace;padding:3px 8px;border-radius:7px;background:var(--panel);border:1px solid var(--line)}
+.pin i{font-style:normal;color:var(--acc)}
+.serial{background:#0c1110;color:#b9f5d0;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.serial .bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#18201e;color:#cfd8d4;font-size:12px;flex-wrap:wrap}
+.serial .bar b{flex:1;font-weight:700}
+.serial .bar button{background:#26302d;color:#e5ebe7;border:0;border-radius:6px;padding:3px 9px;font:600 12px "Plus Jakarta Sans",system-ui,sans-serif;cursor:pointer}
+.serial pre{margin:0;padding:10px;height:190px;overflow:auto;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-all}
+.serial pre .ts{color:#5d7a6e}
+.prose{font-size:14.5px}
+.prose p{margin:0 0 10px}
+.prose .warn,.note.warn{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px}
+.note{background:var(--acc-soft);border-radius:10px;padding:9px 12px;font-size:13.5px;margin-top:10px}
+.mono-box{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;margin-top:8px}
+.cap{font-size:12px;color:var(--mute);margin-top:6px}
+.codewrap{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--code);overflow:hidden}
+.codewrap .cbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--mute);flex-wrap:wrap}
+.codewrap pre{margin:0;padding:12px 14px;overflow:auto;font-size:12.8px;line-height:1.6;max-height:640px;tab-size:2}
+.tk-c{color:var(--cm);font-style:italic}.tk-s{color:var(--str)}.tk-k{color:var(--kw);font-weight:600}.tk-n{color:var(--num)}.tk-p{color:var(--pp)}.tk-f{color:var(--acc)}
+ul.lst{margin:0;padding-left:18px}ul.lst li{margin-bottom:6px}
+.wsvg{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+.wsvg svg{display:block;width:100%;min-width:640px;height:auto}
+table.pt{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px}
+table.pt th,table.pt td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.pt th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.sw{display:inline-block;width:22px;height:5px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.tblwrap{overflow-x:auto}
+table.big{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+table.big th,table.big td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.big th{position:sticky;top:0;background:var(--panel);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+table.big tr.r{cursor:pointer}table.big tr.r:hover td{background:var(--panel2)}
+.yes{color:var(--ok);font-weight:700}.nope{color:var(--no)}
+.ref h3{margin:18px 0 8px;font-size:17px}
+.ref h3:first-child{margin-top:0}
+.foot{color:var(--mute);font-size:12px;margin-top:14px;text-align:center}
+.layout>*{min-width:0}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}.side{position:static;max-height:none}.nav{max-height:250px}.g2{grid-template-columns:1fr}}
+@media (max-width:520px){header.top h1{font-size:21px}.shead h2{font-size:20px}.card{padding:12px}.tab{padding:8px 9px;font-size:13px}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <h1>Lab Sensor Arduino Uno</h1>
+    <p>33 sensor analog &amp; digital: prinsip kerja, simulasi interaktif, wiring ke Arduino Uno, program, kalibrasi, dan troubleshooting. Penanda stok mengacu pada data BHP Lab (STOK BHP.xlsx, Maret 2026).</p>
+  </div>
+  <button class="btn" id="themeBtn" type="button">Tema: otomatis</button>
+</header>
+<div class="layout">
+  <aside class="side">
+    <input type="search" id="q" placeholder="Cari sensor, besaran, pin…" aria-label="Cari sensor">
+    <div class="chips" id="catChips">
+      <button class="chip on" data-c="all">Semua</button><button class="chip" data-c="analog">Analog</button><button class="chip" data-c="digital">Digital</button>
+    </div>
+    <select id="ifSel" aria-label="Filter antarmuka"></select>
+    <label class="cb"><input type="checkbox" id="stokOnly"> Hanya yang ada di stok BHP</label>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+<div class="foot">Lab Elektronika · Teknik Elektro PNJ · D4 Instrumentasi dan Kontrol Industri</div>
+</div>
+
+<script>
+/* ===== helpers for sims ===== */
+const ADC=v=>Math.max(0,Math.min(1023,Math.round(v/5*1023)));
+const f=(x,d=2)=>isFinite(x)?Number(x).toFixed(d):'–';
+const fi=(x,d=2)=>isFinite(x)?Number(x).toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d}):'–';
+const cl=(x,a,b)=>Math.min(b,Math.max(a,x));
+const hex=(n,w=2)=>'0x'+(n>>>0).toString(16).toUpperCase().padStart(w,'0');
+const bin=(n,w)=>(n>>>0).toString(2).padStart(w,'0');
+function sineWave(off,amp,cyc=2,n=200,ph=0){const y=[];for(let i=0;i<n;i++)y.push(off+amp*Math.sin(2*Math.PI*cyc*i/n+ph));return y}
+function pulseTrain(freq,duty,tEnd,start=0){const e=[[0,0]];if(freq<=0)return e;const T=1/freq;for(let t=start;t<tEnd;t+=T){e.push([t,1]);e.push([t+T*duty,0])}return e}
+function bitsWave(bits,bitT,lead){const e=[[0,1]];let t=lead||0;bits.forEach(b=>{e.push([t,b]);t+=bitT});e.push([t,1]);return{e,t}}
+
+const SENSORS=[
+/* ================= ANALOG ================= */
+{id:'potensiometer',nama:'Potensiometer',sub:'Pembagi tegangan putar (B1K–B100K)',cat:'analog',iface:'Analog',besaran:'Posisi sudut',
+ stok:{ada:true,info:'B10K (E-298, 75 pcs, kotak 35), B1K (E-160, kotak 34), B50K (E-158, kotak 34), 5K & 100K (kotak 34)'},
+ spec:[['Tegangan','5 V (ikut Vcc)'],['Nilai','1 kΩ – 100 kΩ, linear (B)'],['Output','0 – 5 V ∝ posisi wiper'],['Resolusi Uno','1024 langkah (10 bit), ±4,9 mV'],['Arus','I = 5/R (10k → 0,5 mA)']],
+ prinsip:`<p>Potensiometer adalah resistor dengan kontak geser (<i>wiper</i>). Ujung-ujungnya dihubungkan ke 5 V dan GND, sehingga wiper menghasilkan tegangan <b>V = 5·(posisi/100%)</b>. Ini adalah "sensor" paling sederhana dan cocok untuk memahami ADC: ADC 10-bit Arduino Uno memetakan 0–5 V menjadi 0–1023.</p><p>Tipe <b>B</b> = linear, tipe <b>A</b> = logaritmik (untuk volume audio). Nilai 10 kΩ adalah kompromi yang baik: arus kecil, tetapi impedansinya cukup rendah untuk ADC (datasheet ATmega328P merekomendasikan impedansi sumber ≤ 10 kΩ).</p>`,
+ w:{mod:'Potensiometer',sub:'pin 1 · wiper · pin 3',pins:[['Pin 1','5V'],['Wiper','A0'],['Pin 3','GND']]},
+ lib:'',
+ code:`// Potensiometer: pin1 -> 5V, wiper -> A0, pin3 -> GND
+const int PIN_POT = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int adc = analogRead(PIN_POT);            // 0..1023
+  float v = adc * 5.0 / 1023.0;             // tegangan wiper (volt)
+  int persen = map(adc, 0, 1023, 0, 100);   // posisi 0..100 %
+  Serial.print("ADC=");      Serial.print(adc);
+  Serial.print("  V=");      Serial.print(v, 2);
+  Serial.print(" V  Posisi="); Serial.print(persen);
+  Serial.println(" %");
+  delay(200);
+}`,
+ rumus:`<p><b>V = ADC × 5,0 / 1023</b> dan <b>posisi (%) = ADC/1023 × 100</b>.</p><p>Jika Vcc USB hanya 4,8 V, hasil tegangan ikut bergeser karena V<sub>ref</sub> = Vcc. Untuk pengukuran posisi (rasio) ini tidak masalah, karena wiper juga diberi tegangan dari Vcc yang sama (pengukuran <i>ratiometric</i>).</p>`,
+ masalah:['Nilai meloncat-loncat: kontak wiper kotor/aus. Tambah kapasitor 100 nF dari wiper ke GND dan rata-ratakan beberapa sampel.','Nilai maksimum tidak sampai 1023: tegangan 5 V turun (beban USB). Ukur dengan multimeter.','Arah terbalik: tukar kabel pin 1 dan pin 3.'],
+ tugas:['Kendalikan kecerahan LED (PWM D9) dengan potensiometer memakai map() ke 0–255.','Ukur linearitas: catat ADC pada 10 posisi bersudut tetap, lalu hitung error terhadap garis lurus.','Bandingkan noise ADC tanpa dan dengan kapasitor 100 nF (ambil 100 sampel, hitung simpangan baku).'],
+ sim:{in:[{k:'pos',l:'Posisi wiper',min:0,max:100,step:1,u:'%',def:50}],
+  out:(s,nz)=>{const v=5*s.pos/100+nz(0.004);const a=ADC(v);return{rows:[['Tegangan wiper',fi(v,3)+' V'],['ADC (A0)',a],['Posisi terbaca',Math.round(a/1023*100)+' %']],pins:[['A0',fi(v,2)+' V']],ser:`ADC=${a}  V=${f(a*5/1023)} V  Posisi=${Math.round(a/1023*100)} %`,
+   bar:{v:a,max:1023,l:'ADC'}}}}},
+
+{id:'joystick',nama:'Joystick KY-023',sub:'2 potensiometer XY + tombol',cat:'analog',iface:'Analog',besaran:'Posisi 2 sumbu',
+ stok:{ada:true,info:'Kode 10, 12 pcs, kotak 2'},
+ spec:[['Tegangan','5 V'],['Output','VRx, VRy: 0–5 V (tengah ≈ 2,5 V); SW: digital aktif LOW'],['Mekanik','2 potensiometer 10 kΩ + saklar tekan'],['Pin','GND, +5V, VRx, VRy, SW']],
+ prinsip:`<p>KY-023 berisi dua potensiometer yang digerakkan tuas: satu untuk sumbu X, satu untuk sumbu Y. Saat tuas di tengah, kedua wiper ≈ 2,5 V (ADC ≈ 512). Menekan tuas menutup saklar ke GND, sehingga pin SW perlu <b>pull-up</b> (pakai <code>INPUT_PULLUP</code>) dan bernilai LOW saat ditekan.</p><p>Posisi tengah jarang tepat 512, jadi biasanya dipakai <b>deadzone</b> beberapa persen agar robot/servo tidak bergerak sendiri.</p>`,
+ w:{mod:'KY-023',sub:'Joystick',pins:[['GND','GND'],['+5V','5V'],['VRx','A0'],['VRy','A1'],['SW','D2']]},
+ lib:'',
+ code:`// Joystick KY-023
+const int PIN_X = A0, PIN_Y = A1, PIN_SW = 2;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_SW, INPUT_PULLUP);           // saklar ke GND, aktif LOW
+}
+
+void loop() {
+  int x = analogRead(PIN_X);
+  int y = analogRead(PIN_Y);
+  bool tekan = digitalRead(PIN_SW) == LOW;
+  int px = map(x, 0, 1023, -100, 100);
+  int py = map(y, 0, 1023, -100, 100);
+  if (abs(px) < 5) px = 0;                 // deadzone 5 %
+  if (abs(py) < 5) py = 0;
+  Serial.print("X=");  Serial.print(px);
+  Serial.print("%  Y="); Serial.print(py);
+  Serial.print("%  SW="); Serial.println(tekan ? "DITEKAN" : "-");
+  delay(100);
+}`,
+ rumus:`<p>Posisi (%) = (ADC − 512)/512 × 100. Kalibrasi titik tengah: baca ADC saat tuas dilepas lalu pakai nilai itu sebagai pusat, bukan 512.</p>`,
+ masalah:['SW selalu LOW/HIGH acak: lupa INPUT_PULLUP.','Tengah tidak 512 dan robot bergerak sendiri: pakai deadzone dan kalibrasi pusat saat setup().','Sumbu tertukar: orientasi modul berbeda; tukar A0/A1 di kode.'],
+ tugas:['Kendalikan dua servo SG90 (pan–tilt) dengan joystick.','Ubah posisi joystick menjadi sudut (atan2) dan besar (magnitude), tampilkan di Serial.','Buat kalibrasi otomatis titik tengah dan rentang min–max masing-masing sumbu.'],
+ sim:{in:[{k:'x',l:'Tuas X',min:-100,max:100,step:1,u:'%',def:0},{k:'y',l:'Tuas Y',min:-100,max:100,step:1,u:'%',def:0},{k:'sw',l:'Tombol',opts:[[0,'dilepas'],[1,'ditekan']],def:0}],
+  out:(s,nz)=>{const vx=2.5+2.5*s.x/100+nz(0.005),vy=2.5+2.5*s.y/100+nz(0.005),ax=ADC(vx),ay=ADC(vy);let px=Math.round((ax/1023)*200-100),py=Math.round((ay/1023)*200-100);if(Math.abs(px)<5)px=0;if(Math.abs(py)<5)py=0;
+   return{rows:[['VRx / ADC',fi(vx,2)+' V / '+ax],['VRy / ADC',fi(vy,2)+' V / '+ay],['SW (D2)',+s.sw?'LOW (ditekan)':'HIGH']],pins:[['A0',fi(vx,2)+' V'],['A1',fi(vy,2)+' V'],['D2',+s.sw?'LOW':'HIGH']],ser:`X=${px}%  Y=${py}%  SW=${+s.sw?'DITEKAN':'-'}`,xy:{x:s.x,y:s.y}}}}},
+
+{id:'ldr',nama:'LDR (Fotoresistor GL5528)',sub:'LDR + resistor 10 kΩ / modul LDR',cat:'analog',iface:'Analog',besaran:'Intensitas cahaya',
+ stok:{ada:true,info:'LDR GL5528 5/7/12 mm (kode 123–125, @50 pcs, RAKO); modul LDR (kode 14, 12 pcs, kotak 26; E-127, kotak 26)'},
+ spec:[['Tegangan','5 V'],['Resistansi','≈ 10–20 kΩ @10 lux, > 1 MΩ gelap'],['γ (gamma)','≈ 0,6–0,7 (GL5528)'],['Respons','naik ≈ 20 ms, turun ≈ 30 ms'],['Output','analog (pembagi tegangan); modul: AO + DO']],
+ prinsip:`<p>LDR terbuat dari kadmium sulfida (CdS). Makin terang, makin banyak elektron yang terbebas, sehingga <b>resistansi turun</b> secara eksponensial: R ≈ R<sub>10</sub>·(lux/10)<sup>−γ</sup>. Karena Arduino membaca tegangan, LDR dipasang sebagai <b>pembagi tegangan</b> dengan resistor tetap 10 kΩ.</p><p>Pada rangkaian di wiring (LDR ke 5 V, 10 kΩ ke GND), tegangan A0 <b>naik saat terang</b>. Modul LDR 3/4-pin biasanya kebalikannya: AO naik saat gelap. DO berasal dari komparator LM393 dengan ambang yang diatur trimpot.</p>`,
+ w:{mod:'LDR + R 10 kΩ',sub:'5V–LDR–A0–10k–GND',pins:[['Ujung LDR','5V'],['Titik tengah','A0'],['Ujung 10 kΩ','GND']],note:'Modul LDR: VCC→5V, GND→GND, AO→A0, DO→D2.'},
+ lib:'',
+ code:`// LDR + resistor 10k: 5V -- LDR -- A0 -- 10k -- GND
+// (modul LDR: AO -> A0, DO -> D2)
+const int PIN_AO = A0, PIN_DO = 2;
+const float R_FIX = 10000.0;          // resistor pembagi
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_DO, INPUT);
+}
+
+void loop() {
+  int adc = analogRead(PIN_AO);
+  float v = adc * 5.0 / 1023.0;
+  // LDR di atas (ke 5V), R_FIX di bawah (ke GND)
+  float rLdr = (v > 0.01) ? R_FIX * (5.0 - v) / v : 1e7;
+  // Pendekatan GL5528: R = 15k * (lux/10)^-0.7
+  float lux = 10.0 * pow(rLdr / 15000.0, -1.0 / 0.7);
+  Serial.print("ADC=");     Serial.print(adc);
+  Serial.print("  R_LDR="); Serial.print(rLdr / 1000.0, 1);
+  Serial.print(" kOhm  ~"); Serial.print(lux, 0);
+  Serial.print(" lux  DO="); Serial.println(digitalRead(PIN_DO));
+  delay(300);
+}`,
+ rumus:`<p>Pembagi tegangan: <b>V = 5·R<sub>fix</sub>/(R<sub>fix</sub>+R<sub>LDR</sub>)</b> → <b>R<sub>LDR</sub> = R<sub>fix</sub>(5−V)/V</b>.</p><p>Konversi ke lux hanya <b>perkiraan</b>, karena R<sub>10</sub> dan γ berbeda tiap LDR (toleransi besar). Untuk lux akurat, kalibrasi dengan lux meter atau BH1750 pada 3–4 kondisi cahaya, lalu cari R<sub>10</sub> dan γ dari regresi log–log.</p>`,
+ masalah:['Nilai sensitif di gelap tetapi jenuh di terang: ganti R_FIX (1–4,7 kΩ untuk ruangan terang, 47–100 kΩ untuk gelap).','Lampu TL berkedip 100 Hz: rata-ratakan 20–50 sampel.','Modul: arah nilai terbalik dengan tutorial. Cek posisi LDR di modul.'],
+ tugas:['Lampu otomatis: LED menyala bila gelap, dengan histeresis agar tidak berkedip.','Kalibrasi LDR terhadap BH1750: cari R10 dan γ dengan regresi log–log.','Ukur waktu respons LDR dengan LED berkedip dan millis().'],
+ sim:{in:[{k:'lux',l:'Intensitas cahaya',min:0,max:4,step:0.01,log:1,u:'lux',def:2.3},{k:'rf',l:'R pembagi',opts:[[1000,'1 kΩ'],[4700,'4,7 kΩ'],[10000,'10 kΩ'],[47000,'47 kΩ']],def:10000}],
+  out:(s,nz)=>{const lux=10**s.lux,R=15000*Math.pow(Math.max(lux,0.01)/10,-0.7),Rl=Math.min(R,2e6),v=5*s.rf/(+s.rf+Rl)+nz(0.004),a=ADC(v),vb=a*5/1023,rL=vb>0.01?s.rf*(5-vb)/vb:1e7,luxE=10*Math.pow(rL/15000,-1/0.7),dout=lux>50?0:1;
+   return{rows:[['R LDR',fi(Rl/1000,1)+' kΩ'],['Tegangan A0',fi(v,3)+' V'],['ADC',a],['Lux terhitung',fi(luxE,0)+' lux'],['DO modul (ambang ~50 lux)',dout?'HIGH (gelap)':'LOW (terang)']],pins:[['A0',fi(v,2)+' V'],['D2',dout?'HIGH':'LOW']],ser:`ADC=${a}  R_LDR=${f(rL/1000,1)} kOhm  ~${f(luxE,0)} lux  DO=${dout}`,bar:{v:a,max:1023,l:'ADC'}}}}},
+
+{id:'lm35',nama:'LM35',sub:'Sensor suhu analog 10 mV/°C',cat:'analog',iface:'Analog',besaran:'Suhu',
+ stok:{ada:true,info:'Modul LM35, kode 11, 12 pcs, kotak 26'},
+ spec:[['Tegangan','4–30 V'],['Rentang','−55 – 150 °C (Uno tanpa V negatif: 2 – 150 °C)'],['Sensitivitas','10,0 mV/°C, 0 °C = 0 V'],['Akurasi','±0,5 °C @25 °C (LM35A ±0,25 °C)'],['Arus','60 µA (pemanasan diri 0,08 °C)']],
+ prinsip:`<p>LM35 memanfaatkan sifat tegangan basis–emitor (V<sub>BE</sub>) transistor yang berubah linear terhadap suhu. Rangkaian internalnya (sensor band-gap) sudah dikalibrasi pabrik sehingga output langsung <b>10 mV per °C</b> dalam Celsius, tanpa offset.</p><p>Dengan V<sub>ref</sub> 5 V, satu langkah ADC = 4,9 mV ≈ 0,49 °C. Resolusi bisa ditingkatkan dengan <code>analogReference(INTERNAL)</code> (1,1 V): satu langkah = 0,11 °C, tetapi suhu maksimum menjadi 110 °C.</p>`,
+ w:{mod:'LM35',sub:'(tampak depan, tulisan menghadap Anda)',pins:[['+Vs','5V'],['Vout','A0'],['GND','GND']]},
+ lib:'',
+ code:`// LM35: +Vs -> 5V, Vout -> A0, GND -> GND
+const int PIN_LM35 = A0;
+
+void setup() {
+  Serial.begin(9600);
+  // analogReference(INTERNAL);   // opsi: Vref 1,1 V (resolusi 0,11 C, maks 110 C)
+}
+
+void loop() {
+  long sum = 0;
+  for (int i = 0; i < 20; i++) {          // rata-rata 20 sampel
+    sum += analogRead(PIN_LM35);
+    delay(2);
+  }
+  float adc = sum / 20.0;
+  float v = adc * 5.0 / 1023.0;           // ganti 5.0 -> 1.1 bila INTERNAL
+  float suhu = v * 100.0;                 // 10 mV / C
+  Serial.print("ADC="); Serial.print(adc, 1);
+  Serial.print("  V="); Serial.print(v * 1000, 0);
+  Serial.print(" mV  T="); Serial.print(suhu, 1);
+  Serial.println(" C");
+  delay(500);
+}`,
+ rumus:`<p><b>T(°C) = V<sub>out</sub> / 0,01 = ADC × (V<sub>ref</sub>/1023) × 100</b>.</p><p>Kalibrasi 1 titik: bandingkan dengan termometer acuan (stok punya termometer kaca 0–100 °C, E-148), lalu tambahkan offset. Pastikan V<sub>ref</sub> diukur dengan multimeter karena 5 V USB sering 4,7–4,9 V.</p>`,
+ masalah:['Suhu terbaca 100 °C+ atau loncat: kaki tertukar (LM35 panas jika terbalik!). Cek pinout.','Nilai berosilasi dengan kabel panjang: pasang RC 75 Ω + 1 µF di output (datasheet) atau rata-ratakan.','Suhu selalu ±2 °C dari acuan: V_ref bukan 5,00 V, ukur dan koreksi di kode.'],
+ tugas:['Termostat sederhana: kipas (relay) ON di atas 32 °C dan OFF di bawah 30 °C.','Bandingkan resolusi dan noise V_ref DEFAULT vs INTERNAL.','Ukur konstanta waktu LM35 saat dipindah dari udara ke air hangat, lalu cocokkan dengan model orde satu.'],
+ sim:{in:[{k:'t',l:'Suhu sebenarnya',min:0,max:150,step:0.5,u:'°C',def:28},{k:'ref',l:'V referensi',opts:[[5,'DEFAULT 5 V'],[1.1,'INTERNAL 1,1 V']],def:5}],
+  out:(s,nz)=>{const v=s.t*0.01+nz(0.002),vr=+s.ref,a=Math.max(0,Math.min(1023,Math.round(v/vr*1023))),T=a*vr/1023*100;
+   return{rows:[['Vout',fi(v*1000,1)+' mV'],['ADC',a+(a>=1023?' (jenuh!)':'')],['Resolusi',fi(vr/1023*100,3)+' °C/langkah'],['Suhu terbaca',fi(T,2)+' °C']],pins:[['A0',fi(v,3)+' V']],ser:`ADC=${a}  V=${f(v*1000,0)} mV  T=${f(T,1)} C`,bar:{v:T,max:150,l:'°C'}}}}},
+
+{id:'soil',nama:'Soil Moisture (resistif FC-28 / YL-69)',sub:'Kelembapan tanah, AO + DO (LM393)',cat:'analog',iface:'Analog',besaran:'Kelembapan tanah',
+ stok:{ada:true,info:'Resistif anti karat E-239 (14 pcs, kotak 28) dan kode 24 HQ (10 pcs, kotak 28)'},
+ spec:[['Tegangan','3,3 – 5 V'],['Output','AO 0–Vcc (kering ≈ tinggi), DO aktif LOW saat basah'],['Arus','≈ 35 mA (probe + LED)'],['Prinsip','resistansi tanah di antara dua elektroda']],
+ prinsip:`<p>Dua elektroda ditanam di tanah. Air dan garam terlarut membuat tanah menghantar listrik, sehingga makin basah, <b>resistansi makin kecil</b>. Modul memakai pembagi tegangan sehingga AO <b>turun saat basah</b>, dan komparator LM393 membandingkannya dengan trimpot untuk menghasilkan DO.</p><p>Arus DC terus-menerus menyebabkan <b>elektrolisis</b>: elektroda cepat berkarat dan pembacaan bergeser. Karena itu VCC sensor disambungkan ke pin digital (D7) dan hanya dinyalakan sesaat saat membaca. Untuk pemakaian jangka panjang, gunakan sensor kapasitif (v1.2) yang elektrodanya tidak bersentuhan langsung dengan tanah.</p>`,
+ w:{mod:'FC-28 + YL-69',sub:'modul komparator',pins:[['VCC','D7'],['GND','GND'],['DO','D3'],['AO','A0']],note:'VCC diberi daya dari D7 (arus < 20 mA per pin aman untuk modul ini).'},
+ lib:'',
+ code:`// Soil moisture resistif: VCC -> D7 (daya sesaat), AO -> A0, DO -> D3
+const int PIN_PWR = 7, PIN_AO = A0, PIN_DO = 3;
+const int ADC_KERING = 1015;    // kalibrasi: probe di udara
+const int ADC_BASAH  = 360;     // kalibrasi: probe dicelup air
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_PWR, OUTPUT);
+  digitalWrite(PIN_PWR, LOW);
+  pinMode(PIN_DO, INPUT);
+}
+
+void loop() {
+  digitalWrite(PIN_PWR, HIGH);           // nyalakan sensor
+  delay(10);                             // tunggu stabil
+  int adc = analogRead(PIN_AO);
+  int d = digitalRead(PIN_DO);
+  digitalWrite(PIN_PWR, LOW);            // matikan: kurangi korosi
+  int persen = constrain(map(adc, ADC_KERING, ADC_BASAH, 0, 100), 0, 100);
+  Serial.print("ADC=");          Serial.print(adc);
+  Serial.print("  Kelembapan="); Serial.print(persen);
+  Serial.print(" %  DO=");       Serial.println(d == LOW ? "BASAH" : "KERING");
+  delay(1000);
+}`,
+ rumus:`<p>Konversi ke persen hanyalah <b>skala relatif</b> antara dua titik kalibrasi: <b>% = (ADC<sub>kering</sub> − ADC)/(ADC<sub>kering</sub> − ADC<sub>basah</sub>) × 100</b>. Nilai ini bukan kadar air volumetrik. Untuk kadar air sebenarnya, perlu kalibrasi gravimetri (timbang tanah basah dan kering oven) di jenis tanah yang sama.</p>`,
+ masalah:['Nilai turun perlahan dari hari ke hari: elektroda berkarat. Pakai daya sesaat atau sensor kapasitif.','Selalu "basah": trimpot DO terlalu tinggi; putar sampai LED pas berganti di batas yang diinginkan.','Berbeda jauh antar pot: kadar garam/pupuk memengaruhi konduktivitas, jadi kalibrasi per media tanam.'],
+ tugas:['Penyiraman otomatis: relay pompa ON saat kelembapan < 40 % dengan histeresis 10 %.','Bandingkan umur elektroda dengan daya terus-menerus vs daya sesaat selama 1 minggu.','Kalibrasi dengan metode gravimetri sederhana (timbang tanah) untuk 3 kadar air.'],
+ sim:{in:[{k:'m',l:'Kelembapan tanah',min:0,max:100,step:1,u:'%',def:45},{k:'th',l:'Ambang trimpot DO',min:0,max:100,step:1,u:'%',def:50}],
+  out:(s,nz)=>{const a=Math.round(1015-(1015-360)*s.m/100+nz(4)),v=a*5/1023,p=cl(Math.round((1015-a)/(1015-360)*100),0,100),d=s.m>=s.th?0:1;
+   return{rows:[['Tegangan AO',fi(v,2)+' V'],['ADC',a],['Kelembapan relatif',p+' %'],['DO',d?'HIGH (kering)':'LOW (basah)']],pins:[['A0',fi(v,2)+' V'],['D3',d?'HIGH':'LOW'],['D7','HIGH saat baca']],ser:`ADC=${a}  Kelembapan=${p} %  DO=${d?'KERING':'BASAH'}`,bar:{v:p,max:100,l:'%'}}}}},
+
+{id:'rain',nama:'Raindrop Sensor',sub:'Deteksi air hujan, AO + DO',cat:'analog',iface:'Analog',besaran:'Air / hujan',
+ stok:{ada:true,info:'E-243, 30 pcs, kotak 27'},
+ spec:[['Tegangan','3,3 – 5 V'],['Output','AO (turun saat basah), DO aktif LOW'],['Pelat','jalur nikel berselang-seling (sisir)'],['Komparator','LM393 + trimpot']],
+ prinsip:`<p>Pelat sensor berisi dua jalur tembaga berlapis nikel yang saling menyisir. Tetesan air menjembatani jalur sehingga resistansi turun. Makin banyak air di pelat, makin rendah tegangan AO. DO menjadi LOW saat AO melewati ambang trimpot.</p><p>Sensor ini mendeteksi <b>ada atau tidaknya air</b>, bukan curah hujan (mm/jam). Untuk curah hujan dipakai tipping bucket (pulsa per 0,2 mm).</p>`,
+ w:{mod:'Raindrop + LM393',sub:'pelat ↔ modul',pins:[['VCC','5V'],['GND','GND'],['DO','D2'],['AO','A0']]},
+ lib:'',
+ code:`// Sensor hujan: AO -> A0, DO -> D2
+const int PIN_AO = A0, PIN_DO = 2;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_DO, INPUT);
+}
+
+void loop() {
+  int adc = analogRead(PIN_AO);
+  int intensitas = constrain(map(adc, 1023, 300, 0, 100), 0, 100);
+  bool hujan = digitalRead(PIN_DO) == LOW;
+  Serial.print("ADC=");          Serial.print(adc);
+  Serial.print("  Basah=");      Serial.print(intensitas);
+  Serial.print(" %  Status=");   Serial.println(hujan ? "HUJAN" : "KERING");
+  delay(500);
+}`,
+ rumus:`<p>Indeks basah (%) = (1023 − ADC)/(1023 − ADC<sub>basah penuh</sub>) × 100. Ini indeks relatif; kalibrasi ADC<sub>basah penuh</sub> dengan menyemprot pelat sampai merata.</p>`,
+ masalah:['Tetap "hujan" setelah reda: air tertinggal di pelat; pasang miring 30–45°.','Pelat cepat korosi: sama seperti soil moisture, beri daya hanya saat membaca.','Embun pagi memicu DO: naikkan ambang trimpot.'],
+ tugas:['Penutup jemuran otomatis: servo menutup saat DO = LOW selama > 5 s.','Catat log basah–kering dengan timestamp RTC DS3231.','Bandingkan respons saat disemprot vs diteteskan.'],
+ sim:{in:[{k:'w',l:'Air di pelat',min:0,max:100,step:1,u:'%',def:0},{k:'th',l:'Ambang trimpot',min:0,max:100,step:1,u:'%',def:20}],
+  out:(s,nz)=>{const a=Math.round(1023-(1023-300)*Math.pow(s.w/100,0.6)+nz(3)),v=a*5/1023,p=cl(Math.round((1023-a)/(1023-300)*100),0,100),d=s.w>=s.th?0:1;
+   return{rows:[['Tegangan AO',fi(v,2)+' V'],['ADC',a],['Indeks basah',p+' %'],['DO',d?'HIGH (kering)':'LOW (hujan)']],pins:[['A0',fi(v,2)+' V'],['D2',d?'HIGH':'LOW']],ser:`ADC=${a}  Basah=${p} %  Status=${d?'KERING':'HUJAN'}`,bar:{v:p,max:100,l:'%'}}}}},
+
+{id:'mq2',nama:'MQ-2 / MQ-135',sub:'Sensor gas semikonduktor SnO₂',cat:'analog',iface:'Analog',besaran:'Konsentrasi gas',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','5 V (pemanas 150 mA)'],['MQ-2','LPG, propana, H₂, asap: 200–10.000 ppm'],['MQ-135','NH₃, NOx, benzena, CO₂ (kualitas udara)'],['Pemanasan awal','> 24 jam (pertama), 1–3 menit (berikutnya)'],['R<sub>L</sub> modul','1 kΩ atau 10 kΩ (kode SMD 102/103)']],
+ prinsip:`<p>Elemen SnO₂ dipanaskan oleh heater internal (±300 °C). Di udara bersih, oksigen terserap di permukaan dan menangkap elektron, sehingga resistansi (R<sub>s</sub>) tinggi. Gas pereduksi (LPG, asap, alkohol) bereaksi dengan oksigen itu dan melepas elektron, sehingga <b>R<sub>s</sub> turun</b>. Modul memasang R<sub>s</sub> dengan R<sub>L</sub> sebagai pembagi tegangan, jadi AO <b>naik</b> saat ada gas.</p><p>Kurva datasheet berbentuk garis lurus di skala log–log: <b>log(ppm) = (log(R<sub>s</sub>/R<sub>0</sub>) − b)/m</b>. R<sub>0</sub> diukur di udara bersih (MQ-2: R<sub>s</sub>/R<sub>0</sub> ≈ 9,83). Sensor ini tidak selektif: alkohol pun terbaca sebagai "LPG".</p>`,
+ w:{mod:'MQ-2 / MQ-135',sub:'modul FC-22',pins:[['VCC','5V'],['GND','GND'],['DO','D2'],['AO','A0']],note:'Heater menarik ±150 mA; pakai port USB yang kuat atau catu 5 V eksternal.'},
+ lib:'',
+ code:`// MQ-2: AO -> A0, DO -> D2
+const int PIN_AO = A0, PIN_DO = 2;
+const float RL = 10.0;           // kOhm, cek resistor beban di modul (103 = 10k, 102 = 1k)
+const float RASIO_UDARA = 9.83;  // Rs/R0 di udara bersih (datasheet MQ-2)
+float R0 = 10.0;                 // kOhm, diisi saat kalibrasi
+
+float bacaRs() {
+  long s = 0;
+  for (int i = 0; i < 50; i++) { s += analogRead(PIN_AO); delay(5); }
+  float v = (s / 50.0) * 5.0 / 1023.0;
+  if (v < 0.01) v = 0.01;
+  return RL * (5.0 - v) / v;       // kOhm
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_DO, INPUT);
+  Serial.println("Pemanasan 60 s (pemakaian pertama: > 24 jam)...");
+  delay(60000);
+  R0 = bacaRs() / RASIO_UDARA;     // kalibrasi di udara bersih
+  Serial.print("R0 = "); Serial.print(R0); Serial.println(" kOhm");
+}
+
+void loop() {
+  float rasio = bacaRs() / R0;
+  // Kurva LPG MQ-2 (log-log): log10(ppm) = (log10(Rs/R0) - 1.31) / -0.47
+  float ppm = pow(10, (log10(rasio) - 1.31) / -0.47);
+  Serial.print("Rs/R0=");  Serial.print(rasio, 2);
+  Serial.print("  LPG~");  Serial.print(ppm, 0);
+  Serial.print(" ppm  DO="); Serial.println(digitalRead(PIN_DO) == LOW ? "GAS!" : "aman");
+  delay(1000);
+}`,
+ rumus:`<p><b>R<sub>s</sub> = R<sub>L</sub>(V<sub>c</sub> − V<sub>out</sub>)/V<sub>out</sub></b>, <b>R<sub>0</sub> = R<sub>s,udara</sub>/9,83</b>, lalu <b>ppm = 10<sup>(log(R<sub>s</sub>/R<sub>0</sub>) − b)/m</sup></b>. Untuk LPG pada MQ-2: m ≈ −0,47, b ≈ 1,31 (diambil dari 2 titik kurva datasheet). Konstanta m dan b berbeda untuk tiap gas dan tiap sensor (MQ-135 memakai kurva sendiri). Angka ppm hanya indikatif tanpa kalibrasi dengan gas standar.</p>`,
+ masalah:['Nilai turun terus di menit-menit awal: belum selesai pemanasan.','ppm tidak masuk akal: R_L di kode tidak sama dengan resistor di modul.','Terpengaruh kelembapan dan suhu: datasheet memberi kurva koreksi; jangan dipakai sebagai alat keselamatan bersertifikat.'],
+ tugas:['Alarm kebocoran gas dengan buzzer dan histeresis.','Plot log(Rs/R0) terhadap log(ppm) dari 3 titik kurva datasheet untuk menurunkan m dan b sendiri.','Bandingkan respons terhadap alkohol (hand sanitizer) dan korek gas (tanpa api).'],
+ sim:{in:[{k:'ppm',l:'Konsentrasi LPG',min:0,max:4,step:0.01,log:1,u:'ppm',def:2.5},{k:'rl',l:'R_L modul',opts:[[1,'1 kΩ'],[10,'10 kΩ']],def:10}],
+  out:(s,nz)=>{const ppm=10**s.ppm,R0=10,rat=ppm<5?9.83:Math.min(9.83,Math.pow(10,-0.47*Math.log10(ppm)+1.31)),Rs=R0*rat,v=5*s.rl/(Rs+ +s.rl)+nz(0.004),a=ADC(v),vb=Math.max(a*5/1023,0.01),rsE=s.rl*(5-vb)/vb,ppE=Math.pow(10,(Math.log10(rsE/R0)-1.31)/-0.47),d=ppm>1000?0:1;
+   return{rows:[['Rs/R0',fi(rat,2)],['Rs',fi(Rs,1)+' kΩ'],['Tegangan AO',fi(v,2)+' V'],['ADC',a],['ppm terhitung',fi(ppE,0)],['DO (ambang ±1000 ppm)',d?'HIGH (aman)':'LOW (gas!)']],pins:[['A0',fi(v,2)+' V'],['D2',d?'HIGH':'LOW']],ser:`Rs/R0=${f(rsE/R0)}  LPG~${f(ppE,0)} ppm  DO=${d?'aman':'GAS!'}`,bar:{v:a,max:1023,l:'ADC'}}}}},
+
+{id:'sharp',nama:'Sharp GP2Y0A21YK0F',sub:'Sensor jarak IR triangulasi 10–80 cm',cat:'analog',iface:'Analog',besaran:'Jarak',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','4,5 – 5,5 V, arus rata-rata 30 mA (puncak ±300 mA)'],['Rentang','10 – 80 cm'],['Output','analog, nonlinear (≈ 2,3 V @10 cm; 0,4 V @80 cm)'],['Periode ukur','38 ms'],['Konektor','JST 3-pin: Vo (kuning), GND (hitam), Vcc (merah)']],
+ prinsip:`<p>LED IR memancarkan berkas ke objek. Cahaya pantulan jatuh ke <b>PSD (position sensitive detector)</b> melalui lensa. Makin dekat objek, makin besar sudut pantul dan makin jauh posisi titik cahaya di PSD. Inilah prinsip <b>triangulasi</b>, sehingga warna objek hanya sedikit berpengaruh (berbeda dengan sensor IR pantulan biasa).</p><p>Output-nya <b>tidak linear</b>: tegangan kira-kira berbanding terbalik dengan jarak. Di bawah 10 cm, tegangan turun lagi sehingga satu tegangan bisa berarti dua jarak (<b>ambigu</b>).</p>`,
+ w:{mod:'GP2Y0A21',sub:'JST: Vo · GND · Vcc',pins:[['Vo (kuning)','A0'],['GND (hitam)','GND'],['Vcc (merah)','5V']],note:'Pasang kapasitor elco 10–100 µF dekat Vcc–GND untuk meredam lonjakan arus LED.'},
+ lib:'',
+ code:`// Sharp GP2Y0A21: Vo -> A0
+const int PIN_IR = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0;
+  for (int i = 0; i < 25; i++) { s += analogRead(PIN_IR); delay(2); }
+  float v = (s / 25.0) * 5.0 / 1023.0;
+  float jarak = 27.728 * pow(v, -1.2045);     // cm, fit kurva datasheet
+  Serial.print("V="); Serial.print(v, 2); Serial.print(" V  Jarak=");
+  if (v < 0.35)      Serial.println("> 80 cm (di luar rentang)");
+  else if (v > 2.4)  Serial.println("< 10 cm (ambigu!)");
+  else { Serial.print(jarak, 1); Serial.println(" cm"); }
+  delay(100);
+}`,
+ rumus:`<p>Fit kurva yang umum dipakai: <b>d = 27,728 · V<sup>−1,2045</sup></b> (cm). Tiap unit sedikit berbeda; kalibrasi dengan mengukur V pada 10, 20, … 80 cm lalu fit <b>d = a·V<sup>b</sup></b> (regresi linear di skala log–log) atau pakai tabel <i>lookup</i> dengan interpolasi.</p>`,
+ masalah:['Pembacaan bergetar: lonjakan arus LED, jadi pasang elco 10 µF dan rata-ratakan.','Jarak dekat terbaca jauh: objek < 10 cm (ambigu), pasang sensor mundur 10 cm dari tepi robot.','Objek mengkilap/kaca memberi nilai acak.'],
+ tugas:['Kalibrasi kurva sendiri pada 8 jarak dan bandingkan dengan rumus umum.','Bandingkan dengan HC-SR04 pada permukaan kain, kayu, dan kaca.','Robot penjaga jarak 25 cm (kontrol P ke motor).'],
+ sim:{in:[{k:'d',l:'Jarak objek',min:4,max:100,step:0.5,u:'cm',def:30}],
+  out:(s,nz)=>{const d=s.d;let v=d>=10?Math.pow(27.728/d,1/1.2045):2.33*(d/10)**0.9;v=Math.max(0.3,v)+nz(0.01);const a=ADC(v),vb=a*5/1023,dE=27.728*Math.pow(vb,-1.2045),st=vb<0.35?'> 80 cm':vb>2.4?'< 10 cm (ambigu)':fi(dE,1)+' cm';
+   return{rows:[['Tegangan Vo',fi(v,3)+' V'],['ADC',a],['Jarak terhitung',st]],pins:[['A0',fi(v,2)+' V']],ser:`V=${f(vb)} V  Jarak=${st}`,curve:{x:d,fn:x=>x>=10?Math.pow(27.728/x,1/1.2045):2.33*(x/10)**0.9,x0:4,x1:100,xl:'cm',yl:'V'}}}}},
+
+{id:'ky038',nama:'Sensor Suara KY-038',sub:'Mikrofon elektret + LM393',cat:'analog',iface:'Analog',besaran:'Level suara',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','3,3 – 5 V'],['AO','sinyal audio di sekitar ≈ Vcc/2 (amplitudo kecil)'],['DO','HIGH saat amplitudo melewati ambang (trimpot)'],['Catatan','bukan pengukur dB terkalibrasi']],
+ prinsip:`<p>Mikrofon elektret mengubah tekanan suara menjadi sinyal listrik kecil yang ditumpangkan pada tegangan DC sekitar setengah Vcc. Yang menunjukkan kerasnya suara adalah <b>amplitudo (puncak–puncak)</b>, bukan nilai rata-rata. Karena itu kode mencari nilai min dan maks dalam jendela 50 ms.</p><p>Karena tidak ada penguat yang memadai, sensitivitas AO rendah: bicara normal hanya mengubah ADC beberapa langkah. DO cocok untuk deteksi tepukan.</p>`,
+ w:{mod:'KY-038',sub:'mic + LM393',pins:[['AO','A0'],['G','GND'],['+','5V'],['DO','D2']]},
+ lib:'',
+ code:`// KY-038: AO -> A0, DO -> D2
+const int PIN_AO = A0, PIN_DO = 2;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PIN_DO, INPUT);
+}
+
+void loop() {
+  unsigned long t0 = millis();
+  int mn = 1023, mx = 0;
+  while (millis() - t0 < 50) {          // jendela 50 ms
+    int a = analogRead(PIN_AO);
+    if (a < mn) mn = a;
+    if (a > mx) mx = a;
+  }
+  int pp = mx - mn;                     // puncak-puncak (langkah ADC)
+  float vpp = pp * 5.0 / 1023.0;
+  Serial.print("Vpp="); Serial.print(vpp, 3); Serial.print(" V  level=");
+  for (int i = 0; i < pp / 10; i++) Serial.print('#');
+  Serial.print("  DO="); Serial.println(digitalRead(PIN_DO));
+}`,
+ rumus:`<p>Level relatif dalam dB: <b>L = 20·log<sub>10</sub>(V<sub>pp</sub>/V<sub>pp,ref</sub>)</b>. Untuk dB SPL sebenarnya perlu kalibrasi dengan sound level meter dan penguat yang layak (misalnya modul MAX4466/MAX9814).</p>`,
+ masalah:['AO hampir tidak berubah: wajar, karena tanpa penguat. Ukur puncak–puncak, bukan nilai sesaat.','DO selalu HIGH: trimpot terlalu sensitif, putar sampai LED DO padam saat hening.','Noise dari motor/servo: pisahkan catu daya.'],
+ tugas:['Saklar tepuk tangan dua kali untuk menyalakan lampu (deteksi 2 pulsa dalam 1 s).','Bar-graph level suara di 8 LED.','Ukur waktu antara dua tepukan untuk estimasi tempo (BPM).'],
+ sim:{in:[{k:'db',l:'Kerasnya suara',min:30,max:100,step:1,u:'dB',def:60},{k:'th',l:'Ambang DO',min:30,max:100,step:1,u:'dB',def:75}],
+  out:(s,nz)=>{const vpp=Math.min(4.5,0.004*Math.pow(10,(s.db-30)/20)),pp=Math.round(vpp/5*1023),d=s.db>=s.th?1:0,y=sineWave(2.5,vpp/2,6,240).map(v=>v+nz(0.003));
+   return{rows:[['Amplitudo Vpp',fi(vpp,3)+' V'],['Puncak–puncak ADC',pp+' langkah'],['DO',d?'HIGH (keras)':'LOW']],pins:[['A0','≈2,5 V ± '+fi(vpp/2,3)],['D2',d?'HIGH':'LOW']],ser:`Vpp=${f(vpp,3)} V  level=${'#'.repeat(Math.min(60,Math.floor(pp/10)))}  DO=${d}`,
+    wave:{a:[{n:'AO (V)',y,c:'--sig1'}],ylo:0,yhi:5,t1:50,unit:'ms'}}}}},
+
+{id:'acs712',nama:'ACS712 (20 A)',sub:'Sensor arus efek Hall, DC & AC',cat:'analog',iface:'Analog',besaran:'Arus listrik',
+ stok:{ada:true,info:'Modul ACS712 20A, kode 15, 12 pcs, kotak 25'},
+ spec:[['Tegangan','5 V'],['Varian','5 A (185 mV/A), 20 A (100 mV/A), 30 A (66 mV/A)'],['Output','2,5 V saat 0 A (ratiometric), ±'],['Isolasi','2,1 kV RMS (jalur arus terpisah dari sinyal)'],['Bandwidth','80 kHz'],['Resistansi jalur','1,2 mΩ']],
+ prinsip:`<p>Arus yang diukur mengalir melalui jalur tembaga di dalam IC. Medan magnet yang dihasilkannya dideteksi oleh sensor <b>efek Hall</b>, lalu diubah menjadi tegangan. Karena kopling magnetik, sisi pengukuran terisolasi dari Arduino. Output 2,5 V berarti 0 A; arus positif menaikkan, arus negatif menurunkan tegangan.</p><p>Resolusi ADC (4,9 mV) setara <b>49 mA</b> untuk versi 20 A, jadi versi ini kurang cocok untuk arus kecil (< 0,5 A). Offset nol bergeser terhadap suhu dan Vcc, sehingga perlu dikalibrasi saat start.</p>`,
+ w:{mod:'ACS712-20A',sub:'IP+ / IP− seri dengan beban',pins:[['VCC','5V'],['OUT','A0'],['GND','GND']],note:'Terminal IP+ dan IP− dipasang SERI dengan beban (seperti amperemeter). Jangan paralel dengan sumber!'},
+ lib:'',
+ code:`// ACS712-20A: OUT -> A0. Jalur IP+/IP- seri dengan beban.
+const int PIN_ACS = A0;
+const float SENS = 0.100;     // V/A (5A: 0.185, 20A: 0.100, 30A: 0.066)
+float vNol = 2.5;             // offset 0 A, dikalibrasi saat start
+
+float bacaV(int n) {
+  long s = 0;
+  for (int i = 0; i < n; i++) s += analogRead(PIN_ACS);
+  return (s / (float)n) * 5.0 / 1023.0;
+}
+
+void setup() {
+  Serial.begin(9600);
+  delay(500);
+  vNol = bacaV(500);          // pastikan beban MATI saat start
+  Serial.print("Offset nol = "); Serial.print(vNol, 3); Serial.println(" V");
+}
+
+void loop() {
+  float v = bacaV(200);
+  float arusDC = (v - vNol) / SENS;
+  // Arus AC: RMS deviasi terhadap offset selama 100 ms (5 siklus 50 Hz)
+  float sum2 = 0; int n = 0;
+  unsigned long t0 = millis();
+  while (millis() - t0 < 100) {
+    float d = analogRead(PIN_ACS) * 5.0 / 1023.0 - vNol;
+    sum2 += d * d; n++;
+  }
+  float arusRMS = sqrt(sum2 / n) / SENS;
+  Serial.print("Vout=");   Serial.print(v, 3);
+  Serial.print(" V  I_DC="); Serial.print(arusDC, 2);
+  Serial.print(" A  I_RMS(AC)="); Serial.print(arusRMS, 2); Serial.println(" A");
+  delay(500);
+}`,
+ rumus:`<p><b>I = (V<sub>out</sub> − V<sub>nol</sub>)/S</b>, S = 0,100 V/A (20 A). Untuk AC: <b>I<sub>rms</sub> = √(mean((V − V<sub>nol</sub>)²))/S</b>. Kalibrasi gain dengan beban yang arusnya diketahui (misalnya lampu + multimeter/tang ampere).</p>`,
+ masalah:['Terbaca ±0,1–0,2 A saat tanpa beban: noise ADC (1 langkah = 49 mA). Rata-ratakan dan buat deadband.','Offset bukan 2,5 V: Vcc USB ≠ 5,00 V (output ratiometric). Kalibrasi nol di setup().','Untuk AC 220 V: pastikan terminal tertutup isolasi; jangan sentuh saat menyala.'],
+ tugas:['Ukur arus motor DC 775 (stok no. 44) saat start dan saat stabil, lalu tampilkan lonjakan arus start.','Wattmeter DC: gabungkan dengan sensor tegangan 0–25 V untuk P = V·I.','Bandingkan pembacaan dengan multimeter pada 5 titik beban, lalu hitung error.'],
+ sim:{in:[{k:'i',l:'Arus beban',min:-20,max:20,step:0.1,u:'A',def:3},{k:'vcc',l:'Vcc sebenarnya',min:4.6,max:5.2,step:0.01,u:'V',def:5}],
+  out:(s,nz)=>{const vcc=+s.vcc,v=vcc/2+0.1*s.i*vcc/5+nz(0.003),a=Math.round(cl(v/vcc*1023,0,1023)),vb=a*5/1023,iE=(vb-2.5)/0.1;
+   return{rows:[['Vout',fi(v,3)+' V'],['ADC',a],['I tanpa kalibrasi nol',fi(iE,2)+' A'],['I dengan kalibrasi nol',fi((vb-(vcc/2)*5/vcc)/0.1,2)+' A'],['Resolusi',fi(5/1023/0.1*1000,0)+' mA/langkah']],pins:[['A0',fi(v,3)+' V']],ser:`Vout=${f(vb,3)} V  I_DC=${f(iE)} A`,bar:{v:s.i+20,max:40,l:'A (−20…20)'}}}}},
+
+{id:'zmct103c',nama:'ZMCT103C (5 A AC)',sub:'Trafo arus (CT) + op-amp',cat:'analog',iface:'Analog',besaran:'Arus AC',
+ stok:{ada:true,info:'Sensor arus 5A single phase ZMCT103C, E-247, 30 pcs, kotak 25'},
+ spec:[['Tegangan','5 V'],['CT','5 A : 5 mA (1000:1), isolasi 3 kV'],['Output','sinus di sekitar Vcc/2, amplitudo diatur trimpot'],['Hanya','arus AC (CT tidak meneruskan DC)']],
+ prinsip:`<p>Kabel fasa beban dimasukkan <b>melewati lubang</b> trafo arus (primer 1 lilitan). Arus sekunder 1000× lebih kecil dialirkan ke resistor burden menjadi tegangan, lalu dikuatkan op-amp dan ditumpangkan pada Vcc/2 agar bisa dibaca ADC yang hanya menerima tegangan positif.</p><p>Arduino mencuplik sinyal selama beberapa siklus (≥ 100 ms = 5 siklus 50 Hz), menghitung offset rata-rata, lalu nilai <b>RMS</b> deviasinya. Faktor skala (A per V<sub>rms</sub>) bergantung pada posisi trimpot, sehingga harus dikalibrasi dengan tang ampere.</p>`,
+ w:{mod:'ZMCT103C',sub:'kabel fasa lewat lubang CT',pins:[['VCC','5V'],['GND','GND'],['OUT','A0']],note:'Hanya SATU kabel (fasa) yang lewat lubang CT. Bila fasa dan netral sama-sama lewat, medannya saling meniadakan dan terbaca 0 A.'},
+ lib:'',
+ code:`// ZMCT103C: OUT -> A0. Kabel FASA beban dimasukkan ke lubang CT.
+const int PIN_CT = A0;
+float K_CAL = 5.0;            // A per Vrms -> kalibrasi dengan tang ampere
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  // 1) offset rata-rata selama 100 ms
+  long s = 0; int n = 0;
+  unsigned long t0 = millis();
+  while (millis() - t0 < 100) { s += analogRead(PIN_CT); n++; }
+  float offset = (float)s / n;
+  // 2) RMS deviasi selama 100 ms
+  float sum2 = 0; n = 0; t0 = millis();
+  while (millis() - t0 < 100) {
+    float d = analogRead(PIN_CT) - offset;
+    sum2 += d * d; n++;
+  }
+  float vrms = sqrt(sum2 / n) * 5.0 / 1023.0;
+  float irms = vrms * K_CAL;
+  if (irms < 0.05) irms = 0;  // buang noise
+  Serial.print("Vrms=");  Serial.print(vrms * 1000, 1);
+  Serial.print(" mV  Irms="); Serial.print(irms, 3);
+  Serial.print(" A  P~");  Serial.print(irms * 220, 0);
+  Serial.println(" W (asumsi PF=1)");
+  delay(500);
+}`,
+ rumus:`<p><b>V<sub>rms</sub> = √(Σ(ADC − offset)²/n) × 5/1023</b>, <b>I<sub>rms</sub> = K·V<sub>rms</sub></b>. Kalibrasi K: nyalakan beban yang diketahui (misalnya setrika 350 W ≈ 1,6 A), ukur I dengan tang ampere, lalu <b>K = I<sub>tang</sub>/V<sub>rms</sub></b>. Daya semu S = V·I; daya nyata memerlukan sensor tegangan sekaligus untuk menghitung faktor daya.</p>`,
+ masalah:['Terbaca 0: fasa dan netral lewat lubang bersamaan, atau trimpot gain minimum.','Noise ≈ 30–50 mA tanpa beban: buat ambang buang noise.','Bentuk sinyal terpotong (clipping): gain trimpot terlalu besar untuk arus 5 A.'],
+ tugas:['Kalibrasi K dengan tang ampere memakai 3 beban berbeda.','Monitor energi (kWh) harian dengan integrasi daya per detik.','Gabungkan dengan ZMPT101B untuk menghitung faktor daya beban induktif (kipas).'],
+ sim:{in:[{k:'i',l:'Arus beban (RMS)',min:0,max:5,step:0.05,u:'A',def:1.6},{k:'k',l:'Faktor K di kode',min:3,max:7,step:0.1,u:'A/V',def:5}],
+  out:(s,nz)=>{const vr=s.i/5,amp=vr*Math.SQRT2,y=sineWave(2.5,amp,5,250).map(v=>cl(v+nz(0.004),0,5)),I=vr*s.k;
+   return{rows:[['Amplitudo puncak',fi(amp,3)+' V'],['Vrms output',fi(vr*1000,1)+' mV'],['Irms terhitung',fi(I,3)+' A'+(Math.abs(s.k-5)>0.05?' (K belum tepat)':'')]],pins:[['A0','2,5 V ± '+fi(amp,2)+' V (50 Hz)']],ser:`Vrms=${f(vr*1000,1)} mV  Irms=${f(I,3)} A  P~${f(I*220,0)} W`,
+   wave:{a:[{n:'OUT (V)',y,c:'--sig1'}],ylo:0,yhi:5,t1:100,unit:'ms'}}}}},
+
+{id:'zmpt101b',nama:'ZMPT101B',sub:'Sensor tegangan AC (trafo tegangan)',cat:'analog',iface:'Analog',besaran:'Tegangan AC',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan modul','5 V'],['Input','AC hingga 250 V (L–N)'],['Isolasi','trafo tegangan mini 2 mA:2 mA'],['Output','sinus di sekitar Vcc/2, gain trimpot']],
+ prinsip:`<p>Tegangan jala-jala dihubungkan ke primer trafo mini melalui resistor pembatas, sehingga arus primer kecil (≈ 2 mA). Arus sekunder diubah menjadi tegangan dan dikuatkan op-amp, lalu ditumpangkan pada Vcc/2. Pengolahannya sama dengan ZMCT103C: cuplik ≥ 5 siklus, hitung RMS deviasi, lalu kalikan faktor kalibrasi.</p><p class="warn">⚠ Terminal input bertegangan 220 V. Rakit dalam kotak tertutup, gunakan sekring, dan jangan menyentuh PCB saat terhubung.</p>`,
+ w:{mod:'ZMPT101B',sub:'input L–N 220 V',pins:[['VCC','5V'],['OUT','A0'],['GND','GND']],note:'Sisi input (2 terminal sekrup) ke L dan N melalui sekring 0,5 A. Isolasi semua terminal 220 V!'},
+ lib:'',
+ code:`// ZMPT101B: OUT -> A0. Input L-N 220 V (HATI-HATI)
+const int PIN_V = A0;
+float K_CAL = 440.0;          // V per Vrms output -> kalibrasi dengan multimeter
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0; int n = 0;
+  unsigned long t0 = millis();
+  while (millis() - t0 < 100) { s += analogRead(PIN_V); n++; }
+  float offset = (float)s / n;
+  float sum2 = 0; n = 0; t0 = millis();
+  while (millis() - t0 < 100) {
+    float d = analogRead(PIN_V) - offset;
+    sum2 += d * d; n++;
+  }
+  float vrmsOut = sqrt(sum2 / n) * 5.0 / 1023.0;
+  float vJala = vrmsOut * K_CAL;
+  if (vJala < 10) vJala = 0;
+  Serial.print("Vrms_out="); Serial.print(vrmsOut, 3);
+  Serial.print(" V  V_jala="); Serial.print(vJala, 1); Serial.println(" V");
+  delay(500);
+}`,
+ rumus:`<p><b>V<sub>jala</sub> = K·V<sub>rms,out</sub></b>; kalibrasi <b>K = V<sub>multimeter</sub>/V<sub>rms,out</sub></b>. Atur trimpot agar puncak sinyal ±1,5 V (tidak clipping) pada tegangan tertinggi yang diharapkan.</p>`,
+ masalah:['Bentuk gelombang terpotong: gain trimpot terlalu besar.','Nilai berubah saat beban lain menyala: itu tegangan jala-jala yang memang turun (drop).','Pembacaan meleset ±5 %: jumlah sampel per periode terlalu sedikit (analogRead ±112 µs → ±178 sampel per 20 ms sudah cukup).'],
+ tugas:['Pencatat kualitas tegangan: catat tegangan minimum/maksimum harian.','Proteksi tegangan: relay memutus beban jika > 240 V atau < 190 V.','Gabungkan dengan ZMCT103C untuk daya nyata P = mean(v·i).'],
+ sim:{in:[{k:'v',l:'Tegangan jala-jala',min:0,max:250,step:1,u:'V',def:220},{k:'k',l:'Faktor K di kode',min:380,max:500,step:1,u:'',def:440}],
+  out:(s,nz)=>{const vr=s.v/440,amp=vr*Math.SQRT2,y=sineWave(2.5,amp,5,250).map(v=>cl(v+nz(0.004),0,5)),V=vr*s.k;
+   return{rows:[['Amplitudo puncak',fi(amp,3)+' V'+(amp>2.5?' (clipping!)':'')],['Vrms output',fi(vr,3)+' V'],['V jala terhitung',fi(V,1)+' V']],pins:[['A0','2,5 V ± '+fi(amp,2)+' V']],ser:`Vrms_out=${f(vr,3)} V  V_jala=${f(V,1)} V`,
+   wave:{a:[{n:'OUT (V)',y,c:'--sig1'}],ylo:0,yhi:5,t1:100,unit:'ms'}}}}},
+
+{id:'voltdc',nama:'Sensor Tegangan DC 0–25 V',sub:'Pembagi tegangan 30 kΩ / 7,5 kΩ',cat:'analog',iface:'Analog',besaran:'Tegangan DC',
+ stok:{ada:true,info:'E-240 (20 pcs) dan E-245 (20 pcs), kotak 2'},
+ spec:[['Input','0 – 25 V DC (Arduino 5 V)'],['Rasio','1 : 5 (R1 = 30 kΩ, R2 = 7,5 kΩ)'],['Resolusi','≈ 24 mV (25 V / 1023)'],['Impedansi','37,5 kΩ (membebani sumber sedikit)']],
+ prinsip:`<p>Modul ini hanyalah <b>pembagi tegangan resistif</b>: V<sub>S</sub> = V<sub>in</sub>·R2/(R1+R2) = V<sub>in</sub>/5. Dengan begitu, tegangan hingga 25 V aman dibaca ADC 0–5 V. Terminal "+" di header modul tidak terhubung ke rangkaian; yang dipakai hanya S (sinyal) dan − (GND).</p><p>GND sumber yang diukur akan tersambung ke GND Arduino, jadi modul ini <b>tidak terisolasi</b>. Jangan dipakai untuk tegangan AC atau sumber yang GND-nya berbeda potensial.</p>`,
+ w:{mod:'Voltage Sensor 0–25V',sub:'VCC/GND input ↔ S, +, −',pins:[['S','A0'],['−','GND']],note:'Terminal sekrup VCC/GND = tegangan yang diukur (misalnya baterai 12 V). Pin "+" tidak perlu disambung.'},
+ lib:'',
+ code:`// Sensor tegangan DC 0-25 V: S -> A0, (-) -> GND
+const int PIN_S = A0;
+const float R1 = 30000.0, R2 = 7500.0;   // pembagi di modul
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0;
+  for (int i = 0; i < 20; i++) s += analogRead(PIN_S);
+  float vA0 = (s / 20.0) * 5.0 / 1023.0;
+  float vIn = vA0 * (R1 + R2) / R2;        // = vA0 x 5
+  Serial.print("V_A0="); Serial.print(vA0, 3);
+  Serial.print(" V  V_in="); Serial.print(vIn, 2); Serial.println(" V");
+  delay(500);
+}`,
+ rumus:`<p><b>V<sub>in</sub> = V<sub>A0</sub> × (R1+R2)/R2 = 5 × V<sub>A0</sub></b>. Akurasi dibatasi toleransi resistor (1–5 %) dan V<sub>ref</sub>. Kalibrasi gain dengan multimeter: <b>faktor = V<sub>multimeter</sub>/V<sub>A0</sub></b>.</p>`,
+ masalah:['Terbaca 4,8× bukan 5×: toleransi resistor, kalibrasi faktor.','Arduino reset/rusak: tegangan > 25 V atau polaritas terbalik.','Membaca 0: kabel ke pin "+" (tidak terhubung), seharusnya ke "S".'],
+ tugas:['Monitor baterai LiPo 3S (stok: CNHL 11,1 V) dan alarm saat < 3,5 V/sel.','Wattmeter DC bersama ACS712.','Bandingkan akurasi sebelum dan sesudah kalibrasi pada 0, 5, 12, 20 V.'],
+ sim:{in:[{k:'v',l:'Tegangan masukan',min:0,max:30,step:0.1,u:'V',def:12}],
+  out:(s,nz)=>{const va=s.v/5+nz(0.003),a=ADC(va),vin=a*5/1023*5;
+   return{rows:[['V di pin S',fi(va,3)+' V'+(va>5?' (melebihi 5 V!)':'')],['ADC',a],['V_in terhitung',fi(vin,2)+' V']],pins:[['A0',fi(Math.min(va,5),3)+' V']],ser:`V_A0=${f(a*5/1023,3)} V  V_in=${f(vin)} V`,bar:{v:Math.min(vin,25),max:25,l:'V'}}}}},
+
+{id:'phtanah',nama:'Sensor pH (analog 0–5 V)',sub:'Probe pH tanah/air dengan output tegangan',cat:'analog',iface:'Analog',besaran:'pH',
+ stok:{ada:true,info:'Sensor pH tanah 0–5 V, kode 8, 2 pcs, kotak 27'},
+ spec:[['Output','0 – 5 V (cek datasheet: sebagian modul perlu catu 12–24 V)'],['Rentang','umumnya pH 3–9 (tanah) atau 0–14 (air)'],['Kalibrasi','buffer pH 4,01 dan 6,86 (atau 9,18)'],['Waktu respons','30 – 60 s']],
+ prinsip:`<p>Elektroda kaca pH menghasilkan beda potensial yang sebanding dengan aktivitas ion H⁺: sekitar <b>−59,16 mV per satuan pH</b> pada 25 °C (persamaan Nernst), dengan 0 mV di pH 7. Sinyal ini berimpedansi sangat tinggi, sehingga modul memakai penguat dan menggesernya ke 0–5 V.</p><p>Karena gain dan offset tiap probe berbeda dan berubah seiring umur, pengukuran pH <b>wajib dikalibrasi</b> dengan minimal dua larutan buffer. Kode memakai kalibrasi 2 titik: pH 4,01 dan 6,86.</p>`,
+ w:{mod:'Sensor pH 0–5V',sub:'transmitter/probe',pins:[['VCC','5V'],['GND','GND'],['AOUT','A0']],note:'Periksa label/datasheet: beberapa transmitter pH tanah perlu catu 12–24 V (beri daya terpisah, GND disatukan).'},
+ lib:'',
+ code:`// Sensor pH analog: AOUT -> A0, kalibrasi 2 titik
+const int PIN_PH = A0;
+// Isi dengan tegangan terbaca saat probe di buffer pH 4,01 dan 6,86
+float V_PH4 = 1.43, V_PH7 = 2.45;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0;
+  for (int i = 0; i < 30; i++) { s += analogRead(PIN_PH); delay(10); }
+  float v = (s / 30.0) * 5.0 / 1023.0;
+  float slope = (6.86 - 4.01) / (V_PH7 - V_PH4);   // pH per volt
+  float ph = 6.86 + (v - V_PH7) * slope;
+  Serial.print("V="); Serial.print(v, 3);
+  Serial.print("  pH="); Serial.println(ph, 2);
+  delay(1000);
+}`,
+ rumus:`<p>Kalibrasi 2 titik: <b>pH = 6,86 + (V − V<sub>6,86</sub>)·(6,86 − 4,01)/(V<sub>6,86</sub> − V<sub>4,01</sub>)</b>. Cek <i>slope</i>: elektroda yang sehat memberi 95–102 % dari slope Nernst. Jika < 90 %, elektroda sudah aus. Untuk pH tanah, campur tanah dan air suling 1:2,5 lalu ukur larutannya, atau ikuti petunjuk probe tusuk.</p>`,
+ masalah:['Nilai melayang terus: probe kering atau belum direndam (simpan dalam larutan KCl 3M).','Beda jauh dengan pH meter: belum dikalibrasi atau buffer kedaluwarsa.','GND loop: catu terpisah tanpa GND bersama membuat nilai tidak masuk akal.'],
+ tugas:['Kalibrasi 2 titik dan verifikasi dengan buffer ke-3 (pH 9,18).','Hitung efisiensi slope (%) terhadap Nernst 59,16 mV/pH.','Ukur pH tanah 3 lokasi kampus dengan metode larutan 1:2,5.'],
+ sim:{in:[{k:'ph',l:'pH sebenarnya',min:3,max:10,step:0.01,u:'',def:6.5},{k:'cal',l:'Kalibrasi di kode',opts:[[1,'sudah (sesuai probe)'],[0,'belum (nilai default salah 8 %)']],def:1}],
+  out:(s,nz)=>{const v=5*s.ph/14+nz(0.003),a=ADC(v),vb=a*5/1023,V4=+s.cal?1.432:1.36,V7=+s.cal?2.45:2.42,ph=6.86+(vb-V7)*(6.86-4.01)/(V7-V4);
+   return{rows:[['Tegangan AOUT',fi(v,3)+' V'],['ADC',a],['pH terhitung',fi(ph,2)],['Error',fi(ph-s.ph,2)+' pH']],pins:[['A0',fi(v,3)+' V']],ser:`V=${f(vb,3)}  pH=${f(ph)}`,bar:{v:ph,max:14,l:'pH'}}}}},
+
+{id:'tds',nama:'TDS Meter Analog V1.0',sub:'Konduktivitas air → TDS (ppm)',cat:'analog',iface:'Analog',besaran:'Total Dissolved Solids',
+ stok:{ada:true,info:'Sensor TDS analog V1.0, kode 9, 6 pcs, kotak 27 (+ Xiaomi TDS pen 3 pcs, kotak 26 sebagai acuan)'},
+ spec:[['Tegangan','3,3 – 5,5 V'],['Output','0 – 2,3 V'],['Rentang','0 – 1000 ppm'],['Akurasi','±10 % FS @25 °C'],['Probe','2 elektroda, eksitasi AC (anti polarisasi)']],
+ prinsip:`<p>Ion terlarut (garam, mineral) membuat air menghantarkan listrik. Modul memberi <b>tegangan AC</b> ke dua elektroda agar tidak terjadi polarisasi/elektrolisis, lalu menyearahkan hasilnya menjadi tegangan DC yang sebanding dengan konduktivitas (EC). TDS (ppm) ≈ EC (µS/cm) × 0,5.</p><p>Konduktivitas naik sekitar <b>2 % per °C</b>, jadi tegangan dikompensasi ke 25 °C. Sensor ini relevan langsung dengan WTP/RO PUTOI: air baku sekitar 200 ppm, permeat 10–20 ppm.</p>`,
+ w:{mod:'TDS Meter V1.0',sub:'board + probe',pins:[['+','5V'],['−','GND'],['A','A0']],note:'Jangan menyalakan TDS bersamaan dengan sensor pH di wadah yang sama tanpa isolasi (saling ganggu).'},
+ lib:'',
+ code:`// TDS Meter V1.0: A -> A0
+const int PIN_TDS = A0;
+float suhu = 25.0;            // C, ganti dengan pembacaan DS18B20 bila ada
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0;
+  for (int i = 0; i < 30; i++) { s += analogRead(PIN_TDS); delay(10); }
+  float v = (s / 30.0) * 5.0 / 1023.0;
+  float koef = 1.0 + 0.02 * (suhu - 25.0);          // kompensasi suhu
+  float vk = v / koef;
+  float tds = (133.42 * vk * vk * vk - 255.86 * vk * vk + 857.39 * vk) * 0.5;
+  Serial.print("V=");     Serial.print(v, 3);
+  Serial.print("  TDS="); Serial.print(tds, 0);
+  Serial.print(" ppm  EC~"); Serial.print(tds * 2, 0); Serial.println(" uS/cm");
+  delay(1000);
+}`,
+ rumus:`<p><b>V<sub>25</sub> = V/(1 + 0,02(T − 25))</b>, lalu <b>TDS = 0,5·(133,42V³ − 255,86V² + 857,39V)</b> (kurva DFRobot Gravity TDS). Kalibrasi dengan larutan standar (misalnya 707 ppm) atau bandingkan dengan TDS pen: <b>k = TDS<sub>acuan</sub>/TDS<sub>terbaca</sub></b>.</p>`,
+ masalah:['Nilai berbeda dengan TDS pen: suhu tidak dikompensasi atau faktor TDS berbeda (0,5 vs 0,7).','Air RO terbaca 0: wajar, di bawah resolusi (±10 ppm).','Probe terkena udara: nilai acak, pastikan elektroda terendam penuh.'],
+ tugas:['Ukur TDS air baku, air setelah filter karbon, dan permeat RO PUTOI; hitung salt rejection.','Kompensasi suhu otomatis dengan DS18B20.','Kalibrasi terhadap Xiaomi TDS pen di 3 sampel.'],
+ sim:{in:[{k:'tds',l:'TDS sebenarnya',min:0,max:1000,step:1,u:'ppm',def:200},{k:'t',l:'Suhu air',min:15,max:40,step:0.5,u:'°C',def:28},{k:'comp',l:'Kompensasi suhu di kode',opts:[[1,'pakai suhu aktual'],[0,'tetap 25 °C']],def:1}],
+  out:(s,nz)=>{const g=v=>(133.42*v**3-255.86*v*v+857.39*v)*0.5;let lo=0,hi=2.6;for(let i=0;i<40;i++){const m=(lo+hi)/2;g(m)<s.tds?lo=m:hi=m}const v25=lo,v=v25*(1+0.02*(s.t-25))+nz(0.002),a=ADC(v),vb=a*5/1023,k=1+0.02*((+s.comp?s.t:25)-25),T=g(vb/k);
+   return{rows:[['Tegangan A',fi(v,3)+' V'],['ADC',a],['TDS terhitung',fi(T,0)+' ppm'],['EC',fi(T*2,0)+' µS/cm'],['Error',fi(T-s.tds,0)+' ppm']],pins:[['A0',fi(v,3)+' V']],ser:`V=${f(vb,3)}  TDS=${f(T,0)} ppm  EC~${f(T*2,0)} uS/cm`,bar:{v:T,max:1000,l:'ppm'}}}}},
+
+{id:'turbidity',nama:'Turbidity Sensor',sub:'Kekeruhan air (optik), analog/digital',cat:'analog',iface:'Analog',besaran:'Kekeruhan (NTU)',
+ stok:{ada:true,info:'Turbidity sensor module, kode 28, 5 pcs, kotak 26'},
+ spec:[['Tegangan','5 V, 40 mA'],['Output','analog 0 – 4,5 V (jernih ≈ 4,2 V) atau digital (sakelar di modul)'],['Rentang','0 – 3000 NTU (kurva pendekatan)'],['Prinsip','LED IR + fototransistor, cahaya yang diteruskan']],
+ prinsip:`<p>Probe berisi LED inframerah dan fototransistor yang saling berhadapan. Partikel tersuspensi di air menghamburkan dan menyerap cahaya, sehingga <b>makin keruh, makin sedikit cahaya yang diterima</b> dan tegangan output turun. Air jernih memberi ±4,2 V.</p><p>Kurva tegangan ke NTU yang umum dipakai (DFRobot SEN0189) adalah polinomial orde dua dan hanya pendekatan. Cahaya luar juga memengaruhi pembacaan, jadi ukur di wadah gelap.</p>`,
+ w:{mod:'Turbidity (SEN0189)',sub:'board adaptor',pins:[['V','5V'],['G','GND'],['A','A0']],note:'Geser sakelar di board ke posisi "A" (analog). Posisi "D" = output digital dengan ambang trimpot.'},
+ lib:'',
+ code:`// Turbidity: A -> A0 (sakelar modul di posisi A)
+const int PIN_TURB = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long s = 0;
+  for (int i = 0; i < 50; i++) { s += analogRead(PIN_TURB); delay(2); }
+  float v = (s / 50.0) * 5.0 / 1023.0;
+  float ntu;
+  if (v < 2.5) ntu = 3000;                          // di luar kurva
+  else ntu = -1120.4 * v * v + 5742.3 * v - 4352.9; // kurva SEN0189 (Vcc 5 V)
+  if (ntu < 0) ntu = 0;
+  Serial.print("V="); Serial.print(v, 2);
+  Serial.print("  Kekeruhan="); Serial.print(ntu, 0); Serial.println(" NTU");
+  delay(500);
+}`,
+ rumus:`<p><b>NTU = −1120,4V² + 5742,3V − 4352,9</b> untuk 2,5 ≤ V ≤ 4,2 V. Karena V jernih berbeda antar unit (dan bergantung Vcc), koreksi offset dulu: celup ke air suling, catat V<sub>0</sub>, lalu geser V sehingga V<sub>0</sub> setara 4,2 V. Kalibrasi lebih baik dengan larutan formazin standar atau turbidimeter.</p>`,
+ masalah:['Air jernih terbaca ratusan NTU: offset tiap probe berbeda, lakukan koreksi air suling.','Berubah saat lampu ruangan menyala: tutup wadah dari cahaya luar.','Gelembung udara di celah probe membuat nilai melonjak.'],
+ tugas:['Ukur kekeruhan air baku, setelah sand filter, dan setelah RO di WTP PUTOI.','Buat larutan kekeruhan bertingkat (tepung/susu) dan plot V terhadap konsentrasi.','Alarm backwash filter bila NTU outlet > ambang.'],
+ sim:{in:[{k:'ntu',l:'Kekeruhan sebenarnya',min:0,max:3000,step:5,u:'NTU',def:50}],
+  out:(s,nz)=>{const disc=5742.3**2-4*1120.4*(4352.9+s.ntu),v=disc>0?(5742.3+Math.sqrt(disc))/(2*1120.4):2.56;const vv=v+nz(0.003),a=ADC(vv),vb=a*5/1023;let N=vb<2.5?3000:-1120.4*vb*vb+5742.3*vb-4352.9;N=Math.max(0,N);
+   return{rows:[['Tegangan A',fi(vv,3)+' V'],['ADC',a],['NTU terhitung',fi(N,0)]],pins:[['A0',fi(vv,2)+' V']],ser:`V=${f(vb)}  Kekeruhan=${f(N,0)} NTU`,curve:{x:s.ntu,fn:n=>{const d=5742.3**2-4*1120.4*(4352.9+n);return d>0?(5742.3+Math.sqrt(d))/(2*1120.4):2.56},x0:0,x1:3000,xl:'NTU',yl:'V'}}}}},
+
+/* ================= DIGITAL ================= */
+{id:'dht',nama:'DHT11 / DHT22 (AM2302)',sub:'Suhu & kelembapan, single-wire',cat:'digital',iface:'1-Wire (DHT)',besaran:'Suhu & kelembapan',
+ stok:{ada:true,info:'DHT11: kode 3 (12 pcs) & kode 62 (20 pcs); DHT22: kode 7 (12 pcs); semua kotak 26'},
+ spec:[['Tegangan','3,3 – 5,5 V'],['DHT11','0–50 °C ±2 °C; 20–90 %RH ±5 %; 1 Hz'],['DHT22','−40–80 °C ±0,5 °C; 0–100 %RH ±2–5 %; 0,5 Hz'],['Antarmuka','1 kabel data, 40 bit (RH 16 + T 16 + checksum 8)'],['Pull-up','4,7–10 kΩ (sudah ada di modul 3-pin)']],
+ prinsip:`<p>Di dalamnya ada sensor kelembapan kapasitif (DHT22) atau resistif (DHT11) dan termistor NTC, plus mikrokontroler kecil yang mengubah hasil ukur menjadi data digital. Arduino memulai komunikasi dengan menarik jalur data LOW ≥ 1 ms (DHT22) / 18 ms (DHT11). Sensor lalu menjawab dengan <b>40 bit</b>: setiap bit diawali LOW 50 µs, lalu HIGH <b>26–28 µs = "0"</b> atau <b>70 µs = "1"</b>.</p><p>Byte terakhir adalah <b>checksum</b> = jumlah 4 byte pertama (8 bit bawah). Jika tidak cocok, data ditolak dan library mengembalikan NaN.</p>`,
+ w:{mod:'DHT22 modul',sub:'(+ · out · −)',pins:[['VCC (+)','5V'],['DATA (out)','D2'],['GND (−)','GND']],note:'Sensor DHT 4-pin tanpa modul: pasang resistor pull-up 10 kΩ dari DATA ke VCC; pin 3 tidak dipakai.'},
+ lib:'DHT sensor library (Adafruit) + Adafruit Unified Sensor',
+ code:`#include <DHT.h>          // "DHT sensor library" (Adafruit) + "Adafruit Unified Sensor"
+#define PIN_DHT 2
+#define TIPE    DHT22       // ganti DHT11 bila memakai DHT11
+DHT dht(PIN_DHT, TIPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  delay(2000);                              // DHT22 min 2 s, DHT11 min 1 s
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();          // Celsius
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Gagal baca DHT (cek wiring/pull-up)");
+    return;
+  }
+  float hi = dht.computeHeatIndex(t, h, false);
+  Serial.print("T=");  Serial.print(t, 1);
+  Serial.print(" C  RH="); Serial.print(h, 1);
+  Serial.print(" %  Heat index="); Serial.print(hi, 1); Serial.println(" C");
+}`,
+ rumus:`<p>DHT22: <b>RH = (byte0·256 + byte1)/10</b>, <b>T = ((byte2 & 0x7F)·256 + byte3)/10</b> (bit 15 = tanda minus). DHT11: RH = byte0, T = byte2 (+ byte3/10 pada versi baru). Checksum = (b0+b1+b2+b3) & 0xFF. Kalibrasi kelembapan bisa diperiksa dengan larutan garam jenuh NaCl (75,3 %RH pada 25 °C).</p>`,
+ masalah:['Selalu NaN: pin salah, pull-up tidak ada, atau dibaca lebih cepat dari 2 s.','Kabel > 20 m: turunkan pull-up ke 4,7 kΩ dan pakai kabel twisted.','Kelembapan 99 % terus: sensor pernah terkena air/kondensasi; keringkan dan rekondisi.'],
+ tugas:['Data logger suhu & RH ruang lab ke Serial setiap 1 menit, lalu plot di Excel.','Bandingkan DHT11 vs DHT22 di ruangan yang sama selama 1 jam.','Hitung titik embun (dew point) dari T dan RH dengan rumus Magnus.'],
+ sim:{in:[{k:'t',l:'Suhu',min:-10,max:60,step:0.1,u:'°C',def:28.4},{k:'h',l:'Kelembapan',min:0,max:100,step:0.1,u:'%RH',def:65.2}],
+  out:(s,nz)=>{const H=Math.round(s.h*10),Tt=Math.round(Math.abs(s.t)*10)|(s.t<0?0x8000:0),b=[H>>8,H&255,Tt>>8,Tt&255];const cs=(b[0]+b[1]+b[2]+b[3])&255;const all=[...b,cs];
+   const bits=all.flatMap(x=>bin(x,8).split('').map(Number));const e=[[0,1],[0,0],[1000,1],[1030,0],[1110,1],[1190,0]];let t=1190;bits.forEach(bt=>{e.push([t,0]);t+=50;e.push([t,1]);t+=bt?70:27;e.push([t,0])});e.push([t+50,1]);
+   const tc=Math.round(s.t*10)/10,hc=Math.round(s.h*10)/10,a=(c=>c)(0),hi=tc;
+   return{rows:[['Byte RH',hex(b[0])+' '+hex(b[1])+' = '+H],['Byte T',hex(b[2])+' '+hex(b[3])+(s.t<0?' (bit tanda=1)':'')],['Checksum',hex(cs)+' = ('+b.join('+')+') & 0xFF'],['Hasil',fi(tc,1)+' °C, '+fi(hc,1)+' %RH']],pins:[['D2','frame 40 bit setiap 2 s']],ser:`T=${f(tc,1)} C  RH=${f(hc,1)} %`,
+   wave:{d:[{n:'DATA',e,c:'--sig1'}],t0:0,t1:Math.min(t+60,1190+16*125),unit:'µs',note:'Ditampilkan: start (host LOW 1 ms), respons sensor, dan 16 bit pertama (RH).'}}}}},
+
+{id:'ds18b20',nama:'DS18B20',sub:'Sensor suhu digital 1-Wire (waterproof)',cat:'digital',iface:'1-Wire',besaran:'Suhu',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','3,0 – 5,5 V (atau mode parasit)'],['Rentang','−55 – 125 °C'],['Akurasi','±0,5 °C (−10 – 85 °C)'],['Resolusi','9–12 bit (0,5 – 0,0625 °C)'],['Waktu konversi','94 ms (9 bit) – 750 ms (12 bit)'],['Alamat','ROM 64 bit unik → banyak sensor di 1 pin']],
+ prinsip:`<p>DS18B20 mengukur suhu dengan dua osilator: satu stabil dan satu sangat bergantung suhu, lalu menghitung selisih frekuensinya. Hasilnya disimpan sebagai bilangan 16 bit <b>komplemen dua</b> dengan resolusi 1/16 °C.</p><p>Protokol <b>1-Wire</b> memakai satu jalur data open-drain dengan pull-up 4,7 kΩ. Setiap sensor punya alamat ROM 64 bit, sehingga puluhan sensor bisa berbagi satu pin Arduino. Ini cocok untuk mengukur suhu di beberapa titik tangki atau pipa.</p>`,
+ w:{mod:'DS18B20',sub:'merah · kuning · hitam',pins:[['VDD (merah)','5V'],['DQ (kuning)','D2'],['GND (hitam)','GND']],res:{a:1,b:0,v:'4,7 kΩ'},note:'Resistor pull-up 4,7 kΩ antara DQ dan VDD wajib (modul adaptor biasanya sudah ada).'},
+ lib:'OneWire + DallasTemperature',
+ code:`#include <OneWire.h>
+#include <DallasTemperature.h>   // library: OneWire + DallasTemperature
+#define PIN_ONEWIRE 2
+OneWire ow(PIN_ONEWIRE);
+DallasTemperature sensor(&ow);
+
+void setup() {
+  Serial.begin(9600);
+  sensor.begin();
+  sensor.setResolution(12);                 // 0,0625 C, konversi 750 ms
+  Serial.print("Jumlah sensor: ");
+  Serial.println(sensor.getDeviceCount());
+}
+
+void loop() {
+  sensor.requestTemperatures();             // semua sensor mulai konversi
+  float t = sensor.getTempCByIndex(0);
+  if (t == DEVICE_DISCONNECTED_C) {
+    Serial.println("Sensor tidak terdeteksi (cek pull-up 4k7)");
+  } else {
+    Serial.print("T="); Serial.print(t, 4); Serial.println(" C");
+  }
+  delay(1000);
+}`,
+ rumus:`<p><b>T = raw/16</b> (raw 16 bit komplemen dua, 12 bit). Contoh: 25,0625 °C → 401 = 0x0191; −10,125 °C → 0xFF5E. Resolusi 9/10/11 bit mengabaikan 3/2/1 bit terbawah.</p>`,
+ masalah:['Terbaca −127 °C: sensor tidak terdeteksi (pull-up hilang, kabel putus).','Terbaca 85 °C: nilai reset power-on, karena dibaca sebelum konversi selesai atau catu tidak cukup (mode parasit).','Banyak sensor tidak terbaca: kabel panjang > 20 m dengan topologi bintang; pakai topologi bus dan pull-up 2,2 kΩ.'],
+ tugas:['Pasang 3 DS18B20 di satu pin dan tampilkan alamat ROM masing-masing.','Kompensasi suhu untuk sensor TDS dengan DS18B20.','Bandingkan waktu konversi resolusi 9, 10, 11, 12 bit.'],
+ sim:{in:[{k:'t',l:'Suhu',min:-55,max:125,step:0.0625,u:'°C',def:25.0625},{k:'res',l:'Resolusi',opts:[[12,'12 bit'],[11,'11 bit'],[10,'10 bit'],[9,'9 bit']],def:12}],
+  out:(s,nz)=>{const st=Math.pow(2,12-s.res);let raw=Math.round(s.t*16);raw=Math.floor(raw/st)*st;const r16=raw&0xFFFF,T=raw/16,conv=[94,188,375,750][s.res-9];
+   return{rows:[['Raw (komplemen dua)',hex(r16,4)+' = '+bin(r16,16).replace(/(\d{4})/g,'$1 ').trim()],['Suhu',fi(T,4)+' °C'],['Langkah',fi(st/16,4)+' °C'],['Waktu konversi',conv+' ms']],pins:[['D2','1-Wire (open drain + 4k7)']],ser:`T=${f(T,4)} C`,bar:{v:T+55,max:180,l:'°C (−55…125)'}}}}},
+
+{id:'hcsr04',nama:'HC-SR04 / HY-SRF05',sub:'Sensor jarak ultrasonik 40 kHz',cat:'digital',iface:'Pulsa (Trig/Echo)',besaran:'Jarak',
+ stok:{ada:true,info:'Modul ultrasonic HY-SRF05/HC-SR04, kode 9, 15 pcs, kotak 26'},
+ spec:[['Tegangan','5 V, 15 mA'],['Rentang','2 – 400 cm (efektif 3 – 250 cm)'],['Resolusi','≈ 0,3 cm'],['Sudut','≈ 15°'],['Trigger','pulsa HIGH ≥ 10 µs'],['Echo','HIGH selama waktu tempuh pulang-pergi']],
+ prinsip:`<p>Setelah menerima pulsa trigger 10 µs, modul memancarkan 8 siklus ultrasonik 40 kHz, lalu pin Echo HIGH sampai pantulan diterima. Lebar pulsa Echo = waktu tempuh <b>pergi + pulang</b>, sehingga <b>jarak = t·c/2</b>.</p><p>Cepat rambat bunyi bergantung suhu: <b>c ≈ 331,3 + 0,606·T m/s</b> (≈ 348 m/s pada 28 °C). Mengabaikan suhu memberi error ±2 %. Objek lunak (kain, busa) atau miring menyerap atau membelokkan gelombang, sehingga tidak terdeteksi.</p>`,
+ w:{mod:'HC-SR04',sub:'VCC · Trig · Echo · GND',pins:[['VCC','5V'],['Trig','D9'],['Echo','D10'],['GND','GND']]},
+ lib:'',
+ code:`// HC-SR04: Trig -> D9, Echo -> D10
+const int PIN_TRIG = 9, PIN_ECHO = 10;
+float suhu = 28.0;            // C, koreksi cepat rambat bunyi
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_TRIG, OUTPUT);
+  pinMode(PIN_ECHO, INPUT);
+}
+
+void loop() {
+  digitalWrite(PIN_TRIG, LOW);  delayMicroseconds(2);
+  digitalWrite(PIN_TRIG, HIGH); delayMicroseconds(10);   // trigger 10 us
+  digitalWrite(PIN_TRIG, LOW);
+  unsigned long durasi = pulseIn(PIN_ECHO, HIGH, 30000UL); // timeout 30 ms (~5 m)
+  float c = 331.3 + 0.606 * suhu;                          // m/s
+  float jarak = durasi * c / 20000.0;                      // cm (pulang-pergi)
+  Serial.print("Echo="); Serial.print(durasi); Serial.print(" us  Jarak=");
+  if (durasi == 0) Serial.println("di luar jangkauan");
+  else { Serial.print(jarak, 1); Serial.println(" cm"); }
+  delay(100);                                              // jeda >= 60 ms
+}`,
+ rumus:`<p><b>d (cm) = t (µs) × c (m/s) / 20 000</b>. Pada 20 °C (c = 343 m/s): d ≈ t/58,3. Jeda antar pengukuran ≥ 60 ms agar gema sebelumnya tidak terbaca.</p>`,
+ masalah:['Selalu 0: timeout, objek terlalu jauh atau menyerap; atau Trig/Echo tertukar.','Nilai acak saat beberapa sensor dipakai: saling menangkap gema, nyalakan bergantian.','Jarak 2–3 cm tidak terbaca: zona buta minimum.'],
+ tugas:['Parkir mundur: buzzer makin cepat saat makin dekat.','Ukur kecepatan bunyi: ukur t pada jarak tetap di dua suhu berbeda.','Ukur level air tangki dan konversi ke volume (liter).'],
+ sim:{in:[{k:'d',l:'Jarak objek',min:1,max:450,step:0.5,u:'cm',def:50},{k:'t',l:'Suhu udara',min:0,max:45,step:1,u:'°C',def:28}],
+  out:(s,nz)=>{const c=331.3+0.606*s.t,tus=s.d>=2&&s.d<=400?2*s.d/100/c*1e6:0,dE=tus*(331.3+0.606*28)/20000;
+   return{rows:[['Cepat rambat bunyi',fi(c,1)+' m/s'],['Lebar pulsa Echo',tus?fi(tus,0)+' µs':'timeout (0)'],['Jarak (kode, T=28 °C)',tus?fi(dE,1)+' cm':'di luar jangkauan']],pins:[['D9','pulsa 10 µs'],['D10',tus?'HIGH '+fi(tus,0)+' µs':'tidak ada']],ser:`Echo=${Math.round(tus)} us  Jarak=${tus?f(dE,1)+' cm':'di luar jangkauan'}`,
+   wave:{d:[{n:'TRIG',e:[[0,0],[20,1],[30,0]],c:'--sig2'},{n:'40 kHz',e:pulseTrain(40000e-6,0.5,230,30).map(([t,l])=>[t,l]),c:'--mute'},{n:'ECHO',e:tus?[[0,0],[480,1],[480+tus,0]]:[[0,0]],c:'--sig1'}],t0:0,t1:Math.max(1500,480+tus*1.1),unit:'µs'}}}}},
+
+{id:'pir',nama:'PIR HC-SR501',sub:'Sensor gerak inframerah pasif',cat:'digital',iface:'Digital',besaran:'Gerakan manusia',
+ stok:{ada:true,info:'Kode 1, 15 pcs, kotak 28'},
+ spec:[['Tegangan','4,5 – 20 V (regulator 3,3 V internal)'],['Output','HIGH 3,3 V saat gerak (cukup untuk Uno)'],['Jangkauan','3 – 7 m (trimpot Sx), sudut ±110°'],['Tunda Tx','≈ 3 s – 5 menit (trimpot)'],['Mode','H = retrigger, L = sekali'],['Stabilisasi','30 – 60 s setelah dinyalakan']],
+ prinsip:`<p>Sensor piroelektrik berisi dua elemen yang membaca radiasi inframerah (panas tubuh ±9–10 µm). Lensa Fresnel membagi area pandang menjadi zona-zona. Ketika orang <b>bergerak</b> melintasi zona, kedua elemen menerima panas bergantian sehingga muncul sinyal selisih. Benda panas yang diam tidak terdeteksi.</p><p>IC BISS0001 mengolah sinyal itu menjadi output HIGH selama waktu tunda Tx. Pada mode <b>H (retrigger)</b>, gerakan baru memperpanjang HIGH. Pada mode <b>L</b>, output turun setelah Tx lalu ada waktu blok ±2,5 s.</p>`,
+ w:{mod:'HC-SR501',sub:'VCC · OUT · GND',pins:[['VCC','5V'],['OUT','D2'],['GND','GND']]},
+ lib:'',
+ code:`// PIR HC-SR501: OUT -> D2
+const int PIN_PIR = 2, PIN_LED = 13;
+bool sebelumnya = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_PIR, INPUT);
+  pinMode(PIN_LED, OUTPUT);
+  Serial.println("Stabilisasi PIR 30 s...");
+  delay(30000);
+  Serial.println("Siap");
+}
+
+void loop() {
+  bool gerak = digitalRead(PIN_PIR) == HIGH;
+  digitalWrite(PIN_LED, gerak);
+  if (gerak && !sebelumnya) {
+    Serial.print(millis() / 1000); Serial.println(" s: GERAKAN terdeteksi");
+  }
+  if (!gerak && sebelumnya) {
+    Serial.print(millis() / 1000); Serial.println(" s: kembali diam");
+  }
+  sebelumnya = gerak;                       // deteksi tepi (edge)
+  delay(50);
+}`,
+ rumus:`<p>Tidak ada rumus konversi; outputnya biner. Yang penting dipahami adalah <b>logika tepi</b> (rising/falling edge), sehingga kejadian dicatat sekali, bukan setiap loop.</p>`,
+ masalah:['Terus HIGH setelah dinyalakan: masih dalam 30–60 s stabilisasi.','Picu palsu: angin AC, sinar matahari, atau catu yang noisy. Jauhkan dari sumber panas.','Tidak mati-mati: mode H dengan Tx maksimal; putar trimpot Tx ke kiri.'],
+ tugas:['Lampu otomatis dengan timer software (abaikan Tx modul).','Penghitung jumlah gerakan per jam dengan data logger.','Bandingkan perilaku mode H dan L dengan lambaian berulang.'],
+ sim:{in:[{k:'tx',l:'Waktu tunda Tx',min:3,max:20,step:1,u:'s',def:5},{k:'mode',l:'Jumper mode',opts:[['H','H (retrigger)'],['L','L (sekali)']],def:'H'},{k:'go',l:'Gerakan',btn:'Lambaikan tangan'}],
+  out:(s,nz,st)=>{const now=performance.now()/1000;st.ev=(st.ev||[]).filter(t=>now-t<40);const e=[];let hi=false,until=0,block=0;const evs=st.ev.slice().sort((a,b)=>a-b),W=30,t0=now-W;let lvl=0;const pts=[[0,0]];
+   evs.forEach(t=>{if(s.mode==='H'){if(t<until||t>=block){if(!(t<until))pts.push([t-t0,1]);until=t+ +s.tx}}else{if(t>=until&&t>=block){pts.push([t-t0,1]);until=t+ +s.tx;block=until+2.5}}
+    if(s.mode==='H')block=0;});
+   // build waveform properly
+   const segs=[];let cur=null;evs.forEach(t=>{if(s.mode==='H'){if(cur&&t<=cur[1])cur[1]=t+ +s.tx;else{cur=[t,t+ +s.tx];segs.push(cur)}}else{const last=segs[segs.length-1];if(!last||t>=last[1]+2.5){segs.push([t,t+ +s.tx])}}});
+   const ed=[[0,0]];segs.forEach(([a,b])=>{ed.push([Math.max(0,a-t0),1]);ed.push([Math.max(0,b-t0),0])});const on=segs.some(([a,b])=>now>=a&&now<b);
+   return{rows:[['Output OUT',on?'HIGH (gerak)':'LOW'],['Kejadian gerak (40 s terakhir)',evs.length],['Pulsa output',segs.length]],pins:[['D2',on?'HIGH':'LOW']],ser:on?`${Math.floor(now)} s: GERAKAN terdeteksi`:`${Math.floor(now)} s: diam`,
+   wave:{d:[{n:'gerak',e:[[0,0],...evs.filter(t=>t>t0).flatMap(t=>[[t-t0,1],[t-t0+0.3,0]])],c:'--mute'},{n:'OUT',e:ed,c:'--sig1'}],t0:0,t1:W,unit:'s',live:1}}}}},
+
+{id:'irobstacle',nama:'IR Obstacle (FC-51)',sub:'Pantulan inframerah + komparator',cat:'digital',iface:'Digital',besaran:'Ada/tidak halangan',
+ stok:{ada:true,info:'IR Infrared Sensor, kode 17, 12 pcs, kotak 22'},
+ spec:[['Tegangan','3,3 – 5 V'],['Jarak','2 – 30 cm (trimpot), bergantung warna'],['Output','DO aktif LOW saat ada halangan'],['Komponen','LED IR + fotodioda + LM393']],
+ prinsip:`<p>LED IR memancarkan cahaya; jika ada benda di depan, sebagian dipantulkan ke fotodioda. Komparator LM393 membandingkan sinyal fotodioda dengan ambang trimpot dan mengeluarkan <b>LOW</b> bila pantulan cukup kuat.</p><p>Kuat pantulan bergantung pada <b>jarak dan warna permukaan</b>. Permukaan hitam memantulkan sangat sedikit sehingga jarak deteksinya jauh lebih pendek. Sinar matahari mengandung IR dan bisa memicu deteksi palsu.</p>`,
+ w:{mod:'FC-51',sub:'VCC · GND · OUT',pins:[['VCC','5V'],['GND','GND'],['OUT','D2']]},
+ lib:'',
+ code:`// IR obstacle FC-51: OUT -> D2 (aktif LOW)
+const int PIN_IR = 2;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_IR, INPUT);
+}
+
+void loop() {
+  bool halangan = digitalRead(PIN_IR) == LOW;
+  Serial.println(halangan ? "ADA HALANGAN" : "bebas");
+  delay(200);
+}`,
+ rumus:`<p>Intensitas pantulan ≈ reflektansi/d². Karena itu, jarak deteksi ∝ √reflektansi: permukaan dengan pantulan 1/4 terdeteksi pada ±1/2 jarak.</p>`,
+ masalah:['Selalu LOW: trimpot terlalu sensitif atau ada pantulan dari bodi robot.','Tidak mendeteksi benda hitam: wajar, dekatkan atau pakai ultrasonik.','Kacau di luar ruangan: IR matahari, beri penutup (hood).'],
+ tugas:['Ukur jarak deteksi maksimum untuk kertas putih, abu-abu, dan hitam.','Penghitung barang di konveyor (deteksi tepi).','Robot penghindar halangan sederhana dengan 2 sensor.'],
+ sim:{in:[{k:'d',l:'Jarak benda',min:1,max:40,step:0.5,u:'cm',def:12},{k:'r',l:'Permukaan',opts:[[1,'putih'],[0.4,'abu-abu'],[0.06,'hitam']],def:1},{k:'th',l:'Jarak setel (putih)',min:2,max:30,step:1,u:'cm',def:15}],
+  out:(s,nz)=>{const sig=s.r/(s.d*s.d),thr=1/(s.th*s.th),det=sig>=thr,dmax=s.th*Math.sqrt(s.r);
+   return{rows:[['Pantulan relatif',fi(sig/thr*100,0)+' % ambang'],['Jarak deteksi maks utk permukaan ini',fi(dmax,1)+' cm'],['OUT',det?'LOW (halangan)':'HIGH (bebas)']],pins:[['D2',det?'LOW':'HIGH']],ser:det?'ADA HALANGAN':'bebas',bar:{v:Math.min(sig/thr,2)*50,max:100,l:'% (50 = ambang)'}}}}},
+
+{id:'linetracker',nama:'Line Tracker 3/5 Channel (TCRT5000 / BFD-1000)',sub:'Deteksi garis hitam untuk robot line follower',cat:'digital',iface:'Digital (multi)',besaran:'Posisi garis',
+ stok:{ada:true,info:'3 channel, kode 1, 40 pcs, kotak 19; BFD-1000 5 channel, E-237, 25 pcs, kotak 16'},
+ spec:[['Tegangan','3,3 – 5 V'],['Kanal','3 (S1–S3) atau 5 (S1–S5)'],['Jarak optimal','1 – 2 cm dari lantai'],['Output','digital per kanal (cek polaritas modul)'],['BFD-1000','+ sensor tabrak (CLP) dan proximity (NEAR)']],
+ prinsip:`<p>Setiap kanal adalah pasangan LED IR dan fototransistor (TCRT5000) yang menghadap lantai. Lantai putih memantulkan banyak IR, garis hitam menyerapnya. Komparator mengubah tiap kanal menjadi 0/1.</p><p>Posisi garis dihitung sebagai <b>rata-rata berbobot</b> kanal yang aktif (bobot −2…+2). Nilai ini menjadi <b>error</b> untuk pengendali P/PID yang mengatur selisih kecepatan motor kiri dan kanan.</p>`,
+ w:{mod:'BFD-1000 (5 ch)',sub:'S1 kiri … S5 kanan',pins:[['VCC','5V'],['GND','GND'],['S1','D2'],['S2','D3'],['S3','D4'],['S4','D5'],['S5','D6']],note:'Versi 3 channel: OUT1–OUT3 ke D2–D4; ubah array PIN_S dan BOBOT menjadi {-1,0,1}.'},
+ lib:'',
+ code:`// Line tracker 5 kanal: S1..S5 -> D2..D6
+const int PIN_S[5] = {2, 3, 4, 5, 6};     // S1 (kiri) ... S5 (kanan)
+const int BOBOT[5] = {-2, -1, 0, 1, 2};
+const bool AKTIF_HIGH = true;             // 1 = di atas garis hitam (cek modul!)
+
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i < 5; i++) pinMode(PIN_S[i], INPUT);
+}
+
+void loop() {
+  int jumlah = 0, aktif = 0;
+  Serial.print("Sensor: ");
+  for (int i = 0; i < 5; i++) {
+    int b = digitalRead(PIN_S[i]);
+    if (!AKTIF_HIGH) b = !b;
+    Serial.print(b);
+    if (b) { jumlah += BOBOT[i]; aktif++; }
+  }
+  if (aktif == 0) {
+    Serial.println("  -> garis hilang");
+  } else {
+    float err = (float)jumlah / aktif;      // -2 (kiri) .. +2 (kanan)
+    Serial.print("  error="); Serial.println(err, 2);
+  }
+  delay(100);
+}`,
+ rumus:`<p><b>error = Σ(bobot<sub>i</sub>·s<sub>i</sub>)/Σs<sub>i</sub></b>. Kendali P: <b>v<sub>kiri</sub> = v<sub>0</sub> + K<sub>p</sub>·error</b>, <b>v<sub>kanan</sub> = v<sub>0</sub> − K<sub>p</sub>·error</b>. Bila semua kanal 0, simpan error terakhir untuk memutar balik mencari garis.</p>`,
+ masalah:['Polaritas terbalik (putih = 1): set AKTIF_HIGH = false.','Kanal tidak seragam: atur trimpot tiap kanal di atas putih dan hitam.','Terlalu tinggi dari lantai (> 3 cm): pantulan lemah.'],
+ tugas:['Line follower kontrol P dengan L298N (stok kode 19) dan motor gearbox.','Tambahkan I dan D, lalu bandingkan waktu tempuh satu putaran.','Deteksi persimpangan (semua kanal = 1) untuk menghitung checkpoint.'],
+ sim:{in:[{k:'x',l:'Posisi garis relatif tengah',min:-45,max:45,step:1,u:'mm',def:8},{k:'w',l:'Lebar garis',min:10,max:30,step:1,u:'mm',def:18}],
+  out:(s,nz)=>{const bits=[0,1,2,3,4].map(i=>Math.abs((i-2)*15-s.x)<s.w/2+3?1:0),act=bits.reduce((a,b)=>a+b,0),err=act?bits.reduce((a,b,i)=>a+b*(i-2),0)/act:NaN;
+   return{rows:[['S1–S5',bits.join(' ')],['Error',act?fi(err,2):'garis hilang'],['Koreksi (Kp=40)',act?'kiri '+(150+Math.round(40*err))+' / kanan '+(150-Math.round(40*err))+' PWM':'cari garis']],pins:bits.map((b,i)=>['D'+(i+2),b?'1':'0']),ser:`Sensor: ${bits.join('')}  ${act?'error='+f(err):'-> garis hilang'}`,line:{x:s.x,w:s.w,bits}}}}},
+
+{id:'irspeed',nama:'IR Speed Sensor (opto-interrupter)',sub:'Celah optik + piringan encoder',cat:'digital',iface:'Interrupt (pulsa)',besaran:'Kecepatan putar',
+ stok:{ada:true,info:'IR speed sensor photo opto interruptor, E-242, 15 pcs, kotak 22'},
+ spec:[['Tegangan','3,3 – 5 V'],['Celah','5 mm (U-slot, mis. MOCH22A)'],['Output','DO (LM393), pulsa tiap lubang piringan'],['Piringan','umumnya 20 lubang']],
+ prinsip:`<p>LED IR dan fototransistor saling berhadapan dalam celah U. Piringan berlubang dipasang pada poros motor. Setiap lubang yang lewat meneruskan cahaya sehingga output membentuk <b>pulsa</b>. Frekuensi pulsa sebanding dengan kecepatan: <b>rpm = f·60/N</b>, dengan N = jumlah lubang.</p><p>Pulsa dihitung dengan <b>interrupt</b> (pin 2/3 pada Uno) agar tidak ada yang terlewat, lalu jumlahnya dibaca setiap 1 s (metode frekuensi). Untuk kecepatan rendah, metode periode (mengukur waktu antar pulsa) lebih teliti.</p>`,
+ w:{mod:'Speed sensor',sub:'U-slot + LM393',pins:[['VCC','5V'],['GND','GND'],['DO','D2']],note:'Pin D2 = INT0, D3 = INT1 (pin interrupt eksternal Arduino Uno).'},
+ lib:'',
+ code:`// IR speed sensor: DO -> D2 (INT0)
+const int PIN_DO = 2;
+const int SLOT = 20;                    // jumlah lubang piringan
+volatile unsigned long pulsa = 0;
+
+void hitung() { pulsa++; }              // ISR: sesingkat mungkin
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_DO, INPUT);
+  attachInterrupt(digitalPinToInterrupt(PIN_DO), hitung, RISING);
+}
+
+void loop() {
+  static unsigned long t0 = millis();
+  if (millis() - t0 >= 1000) {
+    noInterrupts();
+    unsigned long p = pulsa; pulsa = 0;  // baca & nolkan secara atomik
+    interrupts();
+    float rpm = p * 60.0 / SLOT;
+    Serial.print("Pulsa/s="); Serial.print(p);
+    Serial.print("  Kecepatan="); Serial.print(rpm, 1); Serial.println(" rpm");
+    t0 += 1000;
+  }
+}`,
+ rumus:`<p><b>rpm = (pulsa per detik)·60/N</b>. Resolusi metode frekuensi dengan jendela 1 s = 60/N rpm (3 rpm untuk N = 20). Metode periode: <b>rpm = 60/(N·T<sub>pulsa</sub>)</b>, lebih baik di bawah ±100 rpm.</p>`,
+ masalah:['Hitungan berlipat: getaran tepi lubang (bouncing). Tambah filter waktu minimal antar pulsa di ISR.','Tidak menghitung: variabel tidak volatile atau pin bukan 2/3.','Nilai rpm "loncat" 3 rpm: batas resolusi metode frekuensi.'],
+ tugas:['Ukur kurva PWM (0–255) terhadap rpm motor DC melalui L298N.','Bandingkan metode frekuensi dan metode periode di kecepatan rendah.','Kontrol kecepatan PI motor DC dengan umpan balik sensor ini.'],
+ sim:{in:[{k:'rpm',l:'Kecepatan poros',min:0,max:3000,step:10,u:'rpm',def:600},{k:'n',l:'Jumlah lubang',opts:[[20,'20'],[10,'10'],[1,'1']],def:20}],
+  out:(s,nz)=>{const fr=s.rpm*s.n/60,T=fr?1000/fr:Infinity,p=Math.round(fr),rE=p*60/s.n;
+   return{rows:[['Frekuensi pulsa',fi(fr,1)+' Hz'],['Periode',isFinite(T)?fi(T,2)+' ms':'–'],['Pulsa dalam 1 s',p],['rpm terhitung',fi(rE,1)+' (resolusi '+fi(60/s.n,1)+')']],pins:[['D2',fr?'pulsa '+fi(fr,0)+' Hz':'tetap']],ser:`Pulsa/s=${p}  Kecepatan=${f(rE,1)} rpm`,
+   wave:{d:[{n:'DO',e:pulseTrain(fr/1000,0.5,50),c:'--sig1'}],t0:0,t1:50,unit:'ms'}}}}},
+
+{id:'njk5002c',nama:'NJK-5002C Hall Proximity',sub:'Saklar proximity magnet, NPN NO',cat:'digital',iface:'Digital (open collector)',besaran:'Kehadiran magnet',
+ stok:{ada:true,info:'E-236, 15 pcs, kotak 34'},
+ spec:[['Tegangan','5 – 30 V DC'],['Output','NPN NO, open collector (LOW saat magnet dekat)'],['Jarak','≈ 10 mm (magnet neodymium)'],['Kabel','coklat +, biru −, hitam sinyal'],['Frekuensi','hingga ±100 Hz']],
+ prinsip:`<p>Elemen <b>efek Hall</b> menghasilkan tegangan bila ditembus medan magnet. IC di dalamnya membandingkan tegangan Hall dengan ambang lalu menyalakan transistor NPN. Karena outputnya <b>open collector</b>, pin harus diberi pull-up (pakai <code>INPUT_PULLUP</code>). Output LOW berarti magnet terdeteksi, dan LED di ujung sensor menyala.</p><p>Sensor ini banyak dipakai sebagai limit switch tanpa kontak, penghitung putaran (magnet di roda), atau deteksi posisi silinder pneumatik.</p>`,
+ w:{mod:'NJK-5002C',sub:'coklat · hitam · biru',pins:[['Coklat (+)','5V'],['Hitam (sinyal)','D2'],['Biru (−)','GND']],note:'Bila catu sensor 12–24 V, output open collector tetap aman ke Arduino asalkan memakai pull-up ke 5 V (bukan ke 12 V).'},
+ lib:'',
+ code:`// NJK-5002C: hitam -> D2 (open collector, aktif LOW)
+const int PIN_HALL = 2;
+volatile unsigned long n = 0;
+
+void isr() { n++; }
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_HALL, INPUT_PULLUP);         // wajib: output open collector
+  attachInterrupt(digitalPinToInterrupt(PIN_HALL), isr, FALLING);
+}
+
+void loop() {
+  bool dekat = digitalRead(PIN_HALL) == LOW;
+  Serial.print("Magnet: "); Serial.print(dekat ? "TERDETEKSI" : "-");
+  Serial.print("   Jumlah deteksi: "); Serial.println(n);
+  delay(300);
+}`,
+ rumus:`<p>Untuk kecepatan: tempel magnet di roda, lalu <b>rpm = 60/T</b> (T = periode antar deteksi). Kecepatan linear <b>v = π·D·rpm/60</b>.</p>`,
+ masalah:['Selalu LOW/acak: lupa INPUT_PULLUP.','Tidak mendeteksi: kutub magnet salah (beberapa tipe hanya satu kutub) atau terlalu jauh.','Pull-up ke 12 V merusak Arduino: selalu pull-up ke 5 V.'],
+ tugas:['Speedometer sepeda/roda robot dengan 1 magnet.','Limit switch posisi akhir aktuator linear.','Ukur jarak deteksi untuk magnet kecil vs besar.'],
+ sim:{in:[{k:'d',l:'Jarak magnet',min:0,max:30,step:0.5,u:'mm',def:5},{k:'pol',l:'Kutub menghadap sensor',opts:[['S','Selatan (S)'],['N','Utara (N)']],def:'S'}],
+  out:(s,nz)=>{const on=s.d<=10&&s.pol==='S',B=s.d>0?400/Math.pow(1+s.d/4,3):400;
+   return{rows:[['Medan di sensor (relatif)',fi(B,0)+' mT'],['Transistor NPN',on?'ON':'OFF'],['Output (dengan pull-up)',on?'LOW → terdeteksi':'HIGH']],pins:[['D2',on?'LOW':'HIGH']],ser:`Magnet: ${on?'TERDETEKSI':'-'}`,bar:{v:Math.min(B,100),max:100,l:'mT'}}}}},
+
+{id:'lpd3806',nama:'Rotary Encoder LPD3806-600BM',sub:'Encoder optik inkremental 600 PPR, A/B',cat:'digital',iface:'Interrupt (quadrature)',besaran:'Posisi & kecepatan sudut',
+ stok:{ada:true,info:'Kode 51, 37 pcs, kotak 37'},
+ spec:[['Tegangan','5 – 24 V DC'],['Resolusi','600 pulsa/putaran per kanal (2400 count dengan dekode ×4)'],['Output','A, B open collector NPN (perlu pull-up)'],['Kecepatan maks','5000 rpm'],['Kabel','merah +, hitam −, hijau A, putih B, shield']],
+ prinsip:`<p>Piringan berkisi dengan 600 celah di antara LED dan fotodetektor menghasilkan dua sinyal kotak <b>A dan B yang bergeser 90°</b> (quadrature). Urutan tepi A–B menunjukkan <b>arah putar</b>, dan jumlah tepi menunjukkan <b>sudut</b>.</p><p>Dengan menghitung setiap tepi naik dan turun di A dan B (dekode ×4), satu putaran = 2400 count = 0,15° per count. Pada Uno dipakai dua interrupt (D2, D3). Kecepatan dihitung dari selisih count per selang waktu.</p>`,
+ w:{mod:'LPD3806-600BM',sub:'5 kabel',pins:[['Merah (+)','5V'],['Hitam (−)','GND'],['Hijau (A)','D2'],['Putih (B)','D3']],note:'Output open collector: INPUT_PULLUP cukup untuk kabel pendek; untuk kabel > 1 m pakai pull-up eksternal 2,2–4,7 kΩ ke 5 V. Shield ke GND.'},
+ lib:'',
+ code:`// LPD3806-600BM: A (hijau) -> D2, B (putih) -> D3
+const int PIN_A = 2, PIN_B = 3;
+const long PPR = 600, CPR = PPR * 4;     // dekode x4 = 2400 count/putaran
+volatile long hitung = 0;
+
+void isrA() { if (digitalRead(PIN_A) == digitalRead(PIN_B)) hitung++; else hitung--; }
+void isrB() { if (digitalRead(PIN_A) != digitalRead(PIN_B)) hitung++; else hitung--; }
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PIN_A, INPUT_PULLUP);          // output open collector
+  pinMode(PIN_B, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(PIN_A), isrA, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(PIN_B), isrB, CHANGE);
+}
+
+void loop() {
+  static long lalu = 0;
+  static unsigned long t0 = millis();
+  if (millis() - t0 >= 100) {
+    noInterrupts(); long c = hitung; interrupts();
+    float sudut = (c % CPR) * 360.0 / CPR;
+    float rpm = (c - lalu) * 600.0 / CPR;  // count per 100 ms -> rpm
+    lalu = c; t0 += 100;
+    Serial.print("Count="); Serial.print(c);
+    Serial.print("  Sudut="); Serial.print(sudut, 1);
+    Serial.print(" deg  Kecepatan="); Serial.print(rpm, 1); Serial.println(" rpm");
+  }
+}`,
+ rumus:`<p><b>Sudut = count·360/2400</b>; <b>rpm = Δcount/Δt·60/2400</b>. Pada 5000 rpm, frekuensi tepi ×4 = 200 kHz, terlalu cepat untuk interrupt Uno (praktis ±20–40 kHz). Untuk kecepatan tinggi, pakai dekode ×1 (RISING di A saja) atau mikrokontroler dengan hardware encoder (STM32 timer).</p>`,
+ masalah:['Count acak saat diam: pull-up kurang atau noise, pakai pull-up eksternal dan kabel shield.','Arah terbalik: tukar A dan B.','Hitungan hilang di kecepatan tinggi: batas interrupt, kurangi dekode atau pakai MCU lain.'],
+ tugas:['Ukur sudut putar poros dan tampilkan dalam derajat.','Encoder sebagai umpan balik kontrol posisi motor DC (PID posisi).','Ukur kecepatan maksimum yang masih terbaca benar dengan ×4 vs ×1.'],
+ sim:{in:[{k:'rpm',l:'Kecepatan',min:-300,max:300,step:1,u:'rpm',def:60}],
+  out:(s,nz)=>{const fA=Math.abs(s.rpm)*600/60,dir=s.rpm>=0?1:-1,T=fA?1/fA*1000:0,tEnd=T?Math.min(5*T,50):10;const A=fA?pulseTrain(fA/1000,0.5,tEnd):[[0,0]],sh=T/4*dir,B=fA?pulseTrain(fA/1000,0.5,tEnd+T,0).map(([t,l])=>[t+sh,l]).filter(([t])=>t>=0):[[0,0]];if(fA&&B[0][0]>0)B.unshift([0,dir>0?0:1]);
+   return{rows:[['Frekuensi A',fi(fA,0)+' Hz'],['Tepi ×4 per detik',fi(fA*4,0)+' /s'],['Count per 100 ms',fi(s.rpm*2400/600,0)],['Arah',s.rpm>0?'B tertinggal 90° (CW)':s.rpm<0?'B mendahului (CCW)':'diam']],pins:[['D2 (A)',fA?fi(fA,0)+' Hz':'tetap'],['D3 (B)','90° geser']],ser:`Count=${Math.round(s.rpm*2400/60*((performance.now()/1000)%60))}  Kecepatan=${f(s.rpm,1)} rpm`,
+   wave:{d:[{n:'A',e:A,c:'--sig1'},{n:'B',e:B,c:'--sig2'}],t0:0,t1:tEnd,unit:'ms'}}}}},
+
+{id:'yfs201',nama:'YF-S201 Flow Sensor',sub:'Sensor aliran air turbin + Hall',cat:'digital',iface:'Interrupt (pulsa)',besaran:'Debit air',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','5 – 18 V'],['Rentang','1 – 30 L/menit'],['Faktor','f (Hz) = 7,5 × Q (L/menit); ≈ 450 pulsa/L'],['Akurasi','±10 % (tanpa kalibrasi)'],['Ulir','G 1/2"'],['Kabel','merah +, hitam −, kuning pulsa']],
+ prinsip:`<p>Air memutar turbin kecil yang dilengkapi magnet. Sensor <b>Hall</b> di luar ruang air mendeteksi magnet yang lewat, sehingga setiap putaran menghasilkan pulsa. Frekuensi pulsa sebanding dengan debit, dan jumlah pulsa sebanding dengan volume total.</p><p>Faktor 7,5 (atau 450 pulsa/L) hanyalah nilai nominal. Akurasi meningkat banyak setelah kalibrasi dengan gelas ukur. Sensor ini relevan untuk praktikum WTP: mengukur debit permeat dan konsentrat RO skala kecil.</p>`,
+ w:{mod:'YF-S201',sub:'merah · kuning · hitam',pins:[['Merah (+)','5V'],['Kuning (pulsa)','D2'],['Hitam (−)','GND']]},
+ lib:'',
+ code:`// YF-S201: kuning -> D2 (INT0)
+const int PIN_FLOW = 2;
+volatile unsigned long pulsa = 0;
+float totalLiter = 0;
+
+void isr() { pulsa++; }
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(PIN_FLOW, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(PIN_FLOW), isr, FALLING);
+}
+
+void loop() {
+  static unsigned long t0 = millis();
+  if (millis() - t0 >= 1000) {
+    noInterrupts(); unsigned long p = pulsa; pulsa = 0; interrupts();
+    float debit = p / 7.5;                 // L/menit (f = 7,5 x Q)
+    totalLiter += p / 450.0;               // ~450 pulsa per liter
+    Serial.print("f=");        Serial.print(p);
+    Serial.print(" Hz  Debit="); Serial.print(debit, 2);
+    Serial.print(" L/min  Total="); Serial.print(totalLiter, 3); Serial.println(" L");
+    t0 += 1000;
+  }
+}`,
+ rumus:`<p><b>Q (L/menit) = f/7,5</b>; <b>V (L) = N<sub>pulsa</sub>/450</b>. Kalibrasi: alirkan air ke gelas ukur 1 L, hitung pulsa total N, lalu ganti 450 dengan N.</p>`,
+ masalah:['Tidak ada pulsa: debit di bawah 1 L/menit (turbin tidak berputar).','Volume meleset ±10 %: kalibrasi faktor pulsa/L.','Pulsa ganda: gelembung udara di pipa, posisikan sensor di bagian bawah pipa.'],
+ tugas:['Kalibrasi faktor pulsa/liter dengan gelas ukur 1 L (3 kali ulang).','Meteran air digital dengan total liter disimpan di EEPROM.','Ukur recovery RO mini: debit permeat/debit umpan dengan 2 sensor.'],
+ sim:{in:[{k:'q',l:'Debit air',min:0,max:30,step:0.1,u:'L/min',def:6}],
+  out:(s,nz)=>{const q=s.q<1?0:s.q,fr=7.5*q,p=Math.round(fr),Q=p/7.5;
+   return{rows:[['Frekuensi',fi(fr,1)+' Hz'],['Pulsa dalam 1 s',p],['Debit terhitung',fi(Q,2)+' L/min'],['Volume per menit',fi(p*60/450,2)+' L']],pins:[['D2',fr?'pulsa '+fi(fr,1)+' Hz':'tetap (di bawah 1 L/min)']],ser:`f=${p} Hz  Debit=${f(Q)} L/min`,
+   wave:{d:[{n:'Pulsa',e:pulseTrain(fr/1000,0.5,500),c:'--sig1'}],t0:0,t1:500,unit:'ms'}}}}},
+
+{id:'mpu9250',nama:'MPU9250 / MPU6050 (IMU)',sub:'Akselerometer + giroskop (+ magnetometer), I2C',cat:'digital',iface:'I2C',besaran:'Kemiringan & rotasi',
+ stok:{ada:true,info:'9DOF MPU9250 (GY-9250), kode 12, 10 pcs, kotak 20'},
+ spec:[['Tegangan modul','3,3 – 5 V (regulator di modul GY)'],['Alamat I2C','0x68 (AD0 = GND) / 0x69'],['Akselerometer','±2/4/8/16 g, 16 bit (16384 LSB/g @±2 g)'],['Giroskop','±250…2000 °/s (131 LSB/(°/s) @±250)'],['MPU9250','+ magnetometer AK8963 (alamat 0x0C)'],['WHO_AM_I','0x71 (MPU9250), 0x68 (MPU6050)']],
+ prinsip:`<p>Di dalam chip terdapat struktur <b>MEMS</b> berukuran mikrometer. Massa kecil yang tergantung pegas bergeser karena percepatan, dan pergeserannya terbaca sebagai perubahan kapasitansi (akselerometer). Giroskop memanfaatkan <b>gaya Coriolis</b> pada massa yang bergetar ketika chip berputar.</p><p>Saat diam, akselerometer hanya membaca gravitasi, jadi sudut kemiringan bisa dihitung: <b>roll = atan2(a<sub>y</sub>, a<sub>z</sub>)</b>, <b>pitch = atan2(−a<sub>x</sub>, √(a<sub>y</sub>²+a<sub>z</sub>²))</b>. Akselerometer peka getaran, sedangkan giroskop drift. Keduanya digabung dengan complementary/Kalman filter.</p>`,
+ w:{mod:'GY-9250',sub:'MPU9250',pins:[['VCC','5V'],['GND','GND'],['SCL','A5'],['SDA','A4']],note:'Pada Uno, SDA = A4 dan SCL = A5 (juga tersedia di header dekat AREF). Modul GY sudah punya pull-up I2C.'},
+ lib:'Wire (bawaan)',
+ code:`#include <Wire.h>
+const uint8_t MPU = 0x68;                  // AD0 = GND
+
+int16_t baca16() {                         // baca 2 byte big-endian
+  uint8_t h = Wire.read();
+  uint8_t l = Wire.read();
+  return (int16_t)((h << 8) | l);
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  Wire.beginTransmission(MPU);             // PWR_MGMT_1 = 0 -> bangunkan
+  Wire.write(0x6B); Wire.write(0x00);
+  Wire.endTransmission();
+  Wire.beginTransmission(MPU);             // baca WHO_AM_I
+  Wire.write(0x75);
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU, (uint8_t)1);
+  uint8_t id = Wire.read();
+  Serial.print("WHO_AM_I = 0x"); Serial.print(id, HEX);
+  Serial.println(id == 0x71 ? " (MPU9250)" : id == 0x68 ? " (MPU6050)" : " (?)");
+}
+
+void loop() {
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);                        // ACCEL_XOUT_H
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU, (uint8_t)14);      // accel(6) temp(2) gyro(6)
+  int16_t ax = baca16(), ay = baca16(), az = baca16();
+  baca16();                                // suhu (tidak dipakai)
+  int16_t gx = baca16(), gy = baca16(), gz = baca16();
+  float axg = ax / 16384.0, ayg = ay / 16384.0, azg = az / 16384.0;   // +-2 g
+  float roll  = atan2(ayg, azg) * 180.0 / PI;
+  float pitch = atan2(-axg, sqrt(ayg * ayg + azg * azg)) * 180.0 / PI;
+  Serial.print("a[g]="); Serial.print(axg, 2); Serial.print(',');
+  Serial.print(ayg, 2);  Serial.print(',');   Serial.print(azg, 2);
+  Serial.print("  gz="); Serial.print(gz / 131.0, 1);
+  Serial.print(" dps  Roll="); Serial.print(roll, 1);
+  Serial.print("  Pitch=");    Serial.println(pitch, 1);
+  delay(100);
+}`,
+ rumus:`<p>Skala: <b>a (g) = raw/16384</b> (±2 g), <b>ω (°/s) = raw/131</b> (±250 °/s). Complementary filter: <b>θ = 0,98·(θ + ω·Δt) + 0,02·θ<sub>accel</sub></b>. Kalibrasi bias giroskop: rata-ratakan 500 sampel saat diam lalu kurangkan.</p>`,
+ masalah:['Semua nilai 0 / −1: belum dibangunkan (register 0x6B) atau alamat bukan 0x68 (cek AD0). Jalankan I2C scanner.','Sudut bergetar saat motor jalan: akselerometer menangkap getaran, pakai complementary filter.','Yaw (heading) tidak bisa dari akselerometer: perlu magnetometer AK8963 atau integrasi giro (drift).'],
+ tugas:['Waterpass digital: tampilkan roll/pitch dan buzzer saat datar ±1°.','Complementary filter dan bandingkan dengan sudut accel murni saat diguncang.','Kalibrasi bias giroskop dan ukur drift yaw selama 5 menit.'],
+ sim:{in:[{k:'roll',l:'Roll',min:-90,max:90,step:1,u:'°',def:15},{k:'pitch',l:'Pitch',min:-80,max:80,step:1,u:'°',def:-10},{k:'gz',l:'Rotasi sumbu Z',min:-250,max:250,step:1,u:'°/s',def:0}],
+  out:(s,nz)=>{const r=s.roll*Math.PI/180,p=s.pitch*Math.PI/180,ax=-Math.sin(p),ay=Math.sin(r)*Math.cos(p),az=Math.cos(r)*Math.cos(p),R=v=>Math.round(cl((v+nz(0.004))*16384,-32768,32767)),rx=R(ax),ry=R(ay),rz=R(az),G=Math.round(cl(s.gz*131,-32768,32767));
+   const axg=rx/16384,ayg=ry/16384,azg=rz/16384,roll=Math.atan2(ayg,azg)*180/Math.PI,pitch=Math.atan2(-axg,Math.hypot(ayg,azg))*180/Math.PI;
+   return{rows:[['ACCEL raw X/Y/Z',rx+' / '+ry+' / '+rz],['a (g)',fi(axg,3)+' / '+fi(ayg,3)+' / '+fi(azg,3)],['GYRO_Z raw',G+' → '+fi(G/131,1)+' °/s'],['Roll / Pitch terhitung',fi(roll,1)+'° / '+fi(pitch,1)+'°']],pins:[['A4 (SDA)','I2C data'],['A5 (SCL)','I2C clock 100 kHz']],ser:`a[g]=${f(axg)},${f(ayg)},${f(azg)}  gz=${f(G/131,1)} dps  Roll=${f(roll,1)}  Pitch=${f(pitch,1)}`,tilt:{roll:s.roll,pitch:s.pitch}}}}},
+
+{id:'bmp280',nama:'BMP280',sub:'Tekanan udara & suhu, I2C/SPI',cat:'digital',iface:'I2C',besaran:'Tekanan & ketinggian',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','1,7 – 3,6 V (modul GY-BMP280: VCC 3,3 V!)'],['Tekanan','300 – 1100 hPa, ±1 hPa absolut, ±0,12 hPa relatif'],['Suhu','−40 – 85 °C ±1 °C'],['Alamat','0x76 (SDO = GND) / 0x77'],['Resolusi ketinggian','≈ 1 m (relatif ±0,25 m dengan oversampling)']],
+ prinsip:`<p>Membran silikon tipis di atas rongga vakum melengkung karena tekanan udara. Piezoresistor pada membran mengubah lengkungan itu menjadi perubahan resistansi. Chip berisi ADC dan <b>koefisien kalibrasi pabrik</b> yang dipakai library untuk menghitung tekanan dan suhu terkompensasi.</p><p>Tekanan turun ±12 Pa per meter di dekat permukaan laut, sehingga ketinggian bisa diestimasi dengan rumus barometrik. Nilainya relatif terhadap tekanan permukaan laut yang dimasukkan di kode.</p>`,
+ w:{mod:'GY-BMP280',sub:'3,3 V!',pins:[['VCC','3.3V'],['GND','GND'],['SCL','A5'],['SDA','A4']],note:'Banyak modul BMP280 TANPA regulator: VCC ke 3,3 V. Modul dengan regulator 5 V biasanya bertanda "VIN".'},
+ lib:'Adafruit BMP280 Library',
+ code:`#include <Wire.h>
+#include <Adafruit_BMP280.h>     // library: "Adafruit BMP280 Library"
+Adafruit_BMP280 bmp;
+const float P_LAUT = 1013.25;    // hPa, tekanan permukaan laut setempat
+
+void setup() {
+  Serial.begin(9600);
+  if (!bmp.begin(0x76)) {        // coba 0x77 bila gagal
+    Serial.println("BMP280 tidak ditemukan");
+    while (1) {}
+  }
+}
+
+void loop() {
+  float t = bmp.readTemperature();
+  float p = bmp.readPressure() / 100.0;      // Pa -> hPa
+  float h = bmp.readAltitude(P_LAUT);        // meter
+  Serial.print("T=");  Serial.print(t, 2);
+  Serial.print(" C  P="); Serial.print(p, 2);
+  Serial.print(" hPa  Ketinggian~"); Serial.print(h, 1); Serial.println(" m");
+  delay(1000);
+}`,
+ rumus:`<p>Rumus barometrik: <b>h = 44330·(1 − (P/P<sub>0</sub>)<sup>1/5,255</sup>)</b> m. Untuk ketinggian absolut, P<sub>0</sub> diisi tekanan permukaan laut terkini (QNH) dari BMKG/bandara. Untuk ketinggian relatif (naik tangga), simpan P saat start sebagai P<sub>0</sub>.</p>`,
+ masalah:['Tidak ditemukan: alamat 0x76/0x77 atau modul BME/BMP salah tipe (chip ID 0x58 = BMP280, 0x60 = BME280).','Modul panas atau rusak: diberi 5 V pada modul tanpa regulator.','Ketinggian absolut meleset puluhan meter: P0 tidak sesuai cuaca hari itu.'],
+ tugas:['Ukur beda tekanan lantai 1 dan lantai 4 gedung lalu hitung beda tinggi.','Pencatat tekanan 24 jam: amati pasang-surut tekanan harian (atmospheric tide).','Altimeter relatif dengan tombol "nol-kan".'],
+ sim:{in:[{k:'h',l:'Ketinggian',min:-50,max:3000,step:1,u:'m',def:90},{k:'p0',l:'P permukaan laut (QNH)',min:1000,max:1025,step:0.1,u:'hPa',def:1010}],
+  out:(s,nz)=>{const P=s.p0*Math.pow(1-s.h/44330,5.255)+nz(0.03),hE=44330*(1-Math.pow(P/1013.25,1/5.255)),hT=44330*(1-Math.pow(P/s.p0,1/5.255));
+   return{rows:[['Tekanan',fi(P,2)+' hPa'],['Ketinggian (kode, P0 = 1013,25)',fi(hE,1)+' m'],['Ketinggian (P0 benar)',fi(hT,1)+' m']],pins:[['A4/A5','I2C 0x76']],ser:`T=29.10 C  P=${f(P)} hPa  Ketinggian~${f(hE,1)} m`,bar:{v:P-800,max:250,l:'hPa (800…1050)'}}}}},
+
+{id:'bh1750',nama:'BH1750 (GY-302)',sub:'Sensor cahaya digital (lux), I2C',cat:'digital',iface:'I2C',besaran:'Iluminansi (lux)',
+ stok:{ada:false,info:'Tidak tercatat di stok BHP'},
+ spec:[['Tegangan','3 – 5 V (modul GY-302)'],['Rentang','1 – 65535 lux'],['Resolusi','1 lux (H-res), 0,5 lux (H-res2)'],['Alamat','0x23 (ADDR = GND) / 0x5C (ADDR = VCC)'],['Respons spektral','mendekati mata manusia']],
+ prinsip:`<p>Fotodioda dengan filter yang menyerupai kepekaan mata manusia diikuti penguat dan ADC 16 bit di dalam chip. Hasilnya sudah dalam satuan <b>lux</b> (dibagi faktor 1,2), sehingga tidak perlu kalibrasi kurva seperti LDR.</p><p>Inilah alasan BH1750 cocok sebagai alat acuan untuk mengkalibrasi LDR, mengukur pencahayaan ruang kelas (SNI 6197: ruang kelas ±250–350 lux), atau sebagai input sistem lampu otomatis.</p>`,
+ w:{mod:'GY-302 BH1750',sub:'I2C',pins:[['VCC','5V'],['GND','GND'],['SCL','A5'],['SDA','A4'],['ADDR','GND']]},
+ lib:'BH1750 (Christopher Laws)',
+ code:`#include <Wire.h>
+#include <BH1750.h>              // library: "BH1750" by Christopher Laws
+BH1750 lux;
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  if (lux.begin(BH1750::CONTINUOUS_HIGH_RES_MODE))
+    Serial.println("BH1750 siap (0x23)");
+  else
+    Serial.println("BH1750 tidak ditemukan");
+}
+
+void loop() {
+  float l = lux.readLightLevel();            // lux
+  Serial.print("Cahaya="); Serial.print(l, 1); Serial.println(" lux");
+  delay(500);
+}`,
+ rumus:`<p><b>lux = raw/1,2</b> (mode H-res, MTreg default 69). Raw 16 bit dibaca dari 2 byte. Untuk cahaya sangat terang (matahari > 65 klx), turunkan MTreg.</p>`,
+ masalah:['Terbaca 0 / −1: belum ada perintah power on / mode, atau alamat salah (cek pin ADDR).','Nilai > 54612 jenuh: di bawah sinar matahari langsung, ubah MTreg.','Membaca terlalu cepat: tunggu 120–180 ms per konversi H-res.'],
+ tugas:['Survei pencahayaan meja-meja lab lalu bandingkan dengan standar SNI.','Kalibrasi LDR terhadap BH1750.','Lampu LED PWM yang menjaga 300 lux konstan (kontrol PI).'],
+ sim:{in:[{k:'lux',l:'Iluminansi',min:0,max:5,step:0.01,log:1,u:'lux',def:2.5}],
+  out:(s,nz)=>{const L=10**s.lux,raw=Math.min(65535,Math.round(L*1.2)),Le=raw/1.2;
+   return{rows:[['Raw 16 bit',raw+' = '+hex(raw,4)],['Lux terhitung',fi(Le,1)+(raw>=65535?' (jenuh)':'')],['Kategori',L<50?'gelap':L<300?'redup (koridor)':L<750?'ruang kelas/kantor':L<10000?'sangat terang':'sinar matahari']],pins:[['A4/A5','I2C 0x23']],ser:`Cahaya=${f(Le,1)} lux`,bar:{v:Math.log10(Math.max(Le,1)),max:5,l:'log10 lux'}}}}},
+
+{id:'ds3231',nama:'RTC DS3231',sub:'Jam waktu nyata presisi (TCXO), I2C',cat:'digital',iface:'I2C',besaran:'Waktu (+ suhu chip)',
+ stok:{ada:true,info:'RTC DS3231 + EEPROM AT24C32, kode 12, 12 pcs, kotak 2'},
+ spec:[['Tegangan','2,3 – 5,5 V + baterai CR2032'],['Akurasi','±2 ppm (0–40 °C) ≈ ±1 menit/tahun'],['Alamat','0x68 (RTC), 0x57 (EEPROM AT24C32)'],['Fitur','2 alarm, output SQW, sensor suhu ±3 °C'],['Format register','BCD']],
+ prinsip:`<p>DS3231 menghitung waktu dari kristal 32,768 kHz yang <b>dikompensasi suhu (TCXO)</b>: sensor suhu internal mengukur suhu tiap 64 s dan menyesuaikan kapasitansi beban kristal agar frekuensinya tetap. Akurasinya jauh lebih baik daripada DS1307 (±20 ppm).</p><p>Waktu disimpan dalam register berformat <b>BCD</b> (detik, menit, jam, hari, tanggal, bulan, tahun). Baterai cadangan menjaga waktu tetap berjalan saat Arduino mati. Inilah dasar data logger dan penjadwalan (misalnya backwash filter otomatis).</p>`,
+ w:{mod:'DS3231 + AT24C32',sub:'ZS-042',pins:[['GND','GND'],['VCC','5V'],['SDA','A4'],['SCL','A5']],note:'Modul ZS-042 punya rangkaian pengisi baterai. Bila memakai CR2032 (tidak bisa diisi ulang), lepas resistor/dioda pengisi atau pakai LIR2032.'},
+ lib:'RTClib (Adafruit)',
+ code:`#include <Wire.h>
+#include <RTClib.h>              // library: "RTClib" (Adafruit)
+RTC_DS3231 rtc;
+const char* HARI[7] = {"Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"};
+
+void setup() {
+  Serial.begin(9600);
+  if (!rtc.begin()) {
+    Serial.println("DS3231 tidak ditemukan");
+    while (1) {}
+  }
+  if (rtc.lostPower())                       // set dari waktu kompilasi
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+}
+
+void loop() {
+  DateTime n = rtc.now();
+  char buf[40];
+  sprintf(buf, "%s %02d/%02d/%04d %02d:%02d:%02d",
+          HARI[n.dayOfTheWeek()], n.day(), n.month(), n.year(),
+          n.hour(), n.minute(), n.second());
+  Serial.print(buf);
+  Serial.print("  Suhu chip="); Serial.print(rtc.getTemperature(), 2);
+  Serial.println(" C");
+  delay(1000);
+}`,
+ rumus:`<p>BCD → desimal: <b>des = (bcd >> 4)·10 + (bcd & 0x0F)</b>. Contoh register menit 0x45 = 45. Drift ±2 ppm = ±0,17 s/hari. Koreksi halus bisa dilakukan lewat register Aging Offset (0x10).</p>`,
+ masalah:['Waktu kembali ke waktu kompilasi setiap reset: rtc.adjust() dipanggil tanpa syarat lostPower().','Waktu salah setelah listrik padam: baterai habis/tidak terpasang.','Konflik alamat 0x68 dengan MPU6050/9250: ubah AD0 MPU ke VCC (0x69).'],
+ tugas:['Data logger suhu LM35 dengan timestamp RTC setiap 10 s.','Penjadwal: nyalakan relay pompa pukul 06:00–06:15 setiap hari.','Ukur drift RTC terhadap jam internet selama 1 minggu.'],
+ sim:{in:[{k:'off',l:'Selisih jam',min:-12,max:12,step:1,u:'jam',def:0}],
+  out:(s,nz)=>{const d=new Date(Date.now()+s.off*3600e3),b=x=>((Math.floor(x/10)<<4)|(x%10)),HR=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],p2=x=>String(x).padStart(2,'0');
+   const reg=[b(d.getSeconds()),b(d.getMinutes()),b(d.getHours()),d.getDay()+1,b(d.getDate()),b(d.getMonth()+1),b(d.getFullYear()%100)];
+   return{clock:{h:d.getHours(),m:d.getMinutes(),s:d.getSeconds()},rows:[['Register 0x00–0x06 (BCD)',reg.map(r=>hex(r)).join(' ')],['Detik 0x00',hex(reg[0])+' → '+d.getSeconds()],['Waktu',HR[d.getDay()]+' '+p2(d.getDate())+'/'+p2(d.getMonth()+1)+'/'+d.getFullYear()+' '+p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds())]],pins:[['A4/A5','I2C 0x68']],
+   ser:`${HR[d.getDay()]} ${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}  Suhu chip=29.25 C`}}}},
+
+{id:'gps',nama:'GPS NEO-6M (GY-NEO6MV2)',sub:'Penerima GNSS, UART NMEA',cat:'digital',iface:'UART',besaran:'Posisi, waktu, kecepatan',
+ stok:{ada:true,info:'GY-NEO6MV2, kode 17, 10 pcs, kotak 3'},
+ spec:[['Tegangan','3,3 – 5 V (regulator di modul)'],['Antarmuka','UART 9600 baud, kalimat NMEA 0183'],['Akurasi','±2,5 m CEP (langit terbuka)'],['Update','1 Hz (hingga 5 Hz)'],['Cold start','±27 s (di luar ruangan)'],['Baterai','backup untuk hot start']],
+ prinsip:`<p>Penerima menangkap sinyal dari satelit GPS yang memancarkan waktu sangat presisi (jam atom) dan posisi orbitnya. Dari selisih waktu tiba sinyal minimal <b>4 satelit</b>, penerima menghitung posisi 3D dan koreksi jamnya sendiri (trilaterasi).</p><p>Hasilnya dikirim lewat UART sebagai kalimat teks <b>NMEA</b>, misalnya <code>$GPGGA</code> (posisi dan jumlah satelit) dan <code>$GPRMC</code> (posisi, kecepatan, tanggal). Library TinyGPS++ mengurai teks itu. Karena Uno hanya punya satu UART hardware (dipakai USB), GPS dibaca lewat SoftwareSerial.</p>`,
+ w:{mod:'GY-NEO6MV2',sub:'+ antena keramik',pins:[['VCC','5V'],['RX','D3'],['TX','D4'],['GND','GND']],note:'RX GPS 3,3 V: untuk keamanan, pakai pembagi 1 kΩ/2 kΩ dari D3. RX GPS hanya perlu bila mengirim konfigurasi.'},
+ lib:'TinyGPSPlus (Mikal Hart) + SoftwareSerial',
+ code:`#include <SoftwareSerial.h>
+#include <TinyGPS++.h>               // library: "TinyGPSPlus" by Mikal Hart
+SoftwareSerial gpsSerial(4, 3);      // RX=D4 (ke TX GPS), TX=D3 (ke RX GPS)
+TinyGPSPlus gps;
+
+void setup() {
+  Serial.begin(115200);
+  gpsSerial.begin(9600);
+  Serial.println("Menunggu fix GPS (di luar ruangan, 30 s - 5 menit)...");
+}
+
+void loop() {
+  while (gpsSerial.available()) gps.encode(gpsSerial.read());
+  static unsigned long t0 = 0;
+  if (millis() - t0 > 1000) {
+    t0 = millis();
+    if (gps.location.isValid()) {
+      Serial.print("Lat=");  Serial.print(gps.location.lat(), 6);
+      Serial.print("  Lon="); Serial.print(gps.location.lng(), 6);
+      Serial.print("  Sat="); Serial.print(gps.satellites.value());
+      Serial.print("  Alt="); Serial.print(gps.altitude.meters(), 1);
+      Serial.println(" m");
+    } else {
+      Serial.print("Belum fix, karakter diterima: ");
+      Serial.println(gps.charsProcessed());
+    }
+  }
+}`,
+ rumus:`<p>NMEA memakai format <b>ddmm.mmmm</b>: 0622.2600,S = −(6 + 22,26/60) = −6,371°. Checksum = XOR semua karakter di antara '$' dan '*'. Jarak dua titik (haversine): d = 2R·asin(√(sin²(Δφ/2) + cos φ₁ cos φ₂ sin²(Δλ/2))), R = 6371 km.</p>`,
+ masalah:['charsProcessed = 0: kabel TX/RX tertukar atau baud bukan 9600.','Karakter masuk tetapi tidak pernah fix: di dalam gedung; bawa ke luar dan tunggu.','SoftwareSerial bentrok dengan Servo/interrupt lain: pakai Mega (Serial1) bila banyak periferal.'],
+ tugas:['Tampilkan kalimat NMEA mentah lalu urai $GPGGA secara manual (tanpa library).','Hitung jarak dan arah ke titik tujuan (gedung Teknik Elektro) dengan haversine.','Pelacak rute: catat titik tiap 5 s lalu plot di peta.'],
+ sim:{in:[{k:'lat',l:'Lintang',min:-7.5,max:-5.5,step:0.0001,u:'°',def:-6.3712},{k:'lon',l:'Bujur',min:106,max:107.5,step:0.0001,u:'°',def:106.8249},{k:'sat',l:'Satelit terlihat',min:0,max:12,step:1,u:'',def:8}],
+  out:(s,nz)=>{const fix=s.sat>=4,dm=(v,dd)=>{const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return String(d).padStart(dd,'0')+m.toFixed(4).padStart(7,'0')};const t=new Date(),hh=String(t.getUTCHours()).padStart(2,'0')+String(t.getUTCMinutes()).padStart(2,'0')+String(t.getUTCSeconds()).padStart(2,'0')+'.00';
+   const body=`GPGGA,${hh},${dm(s.lat,2)},${s.lat<0?'S':'N'},${dm(s.lon,3)},${s.lon<0?'W':'E'},${fix?1:0},${String(s.sat).padStart(2,'0')},${fix?(1.2).toFixed(1):'99.9'},${fix?'52.0':''},M,1.5,M,,`;let cs=0;for(const c of body)cs^=c.charCodeAt(0);const nmea='$'+body+'*'+cs.toString(16).toUpperCase().padStart(2,'0');
+   return{rows:[['Status',fix?'FIX 3D':'belum fix (perlu ≥ 4 satelit)'],['Kalimat NMEA',nmea],['Checksum (XOR)',hex(cs)]],pins:[['D4 ← TX GPS','9600 baud, 8N1']],ser:fix?`Lat=${f(s.lat,6)}  Lon=${f(s.lon,6)}  Sat=${s.sat}  Alt=52.0 m`:`Belum fix, karakter diterima: ${Math.floor(performance.now()/1000)*480}`,mono:nmea}}}},
+
+{id:'hx711',nama:'HX711 + Load Cell',sub:'ADC 24 bit untuk jembatan strain gauge',cat:'digital',iface:'Serial 2-kabel (DT/SCK)',besaran:'Gaya / berat',
+ stok:{ada:true,info:'ADC HX711, E-307, 10 pcs, kotak 22 (load cell tidak tercatat di stok)'},
+ spec:[['Tegangan','2,6 – 5,5 V'],['ADC','24 bit, gain 128 (kanal A) / 64 / 32 (B)'],['Rentang input','±20 mV @gain 128 (AVDD 5 V)'],['Laju data','10 SPS (RATE = GND) / 80 SPS'],['Load cell','umumnya 1 mV/V (bar 1–20 kg)']],
+ prinsip:`<p>Load cell adalah batang logam dengan 4 <b>strain gauge</b> yang membentuk <b>jembatan Wheatstone</b>. Beban membuat batang melentur sehingga resistansi gauge berubah ±0,1 %, dan jembatan menghasilkan beda tegangan hanya beberapa milivolt (1 mV per volt eksitasi pada beban penuh).</p><p>HX711 berisi penguat (gain 128) dan ADC sigma-delta 24 bit khusus untuk sinyal sekecil itu. Protokolnya sederhana: setelah DT turun LOW (data siap), Arduino memberi 25 pulsa SCK dan membaca 24 bit (MSB dulu). Pulsa ke-25 memilih kanal A/gain 128 untuk pembacaan berikutnya.</p>`,
+ w:{mod:'HX711',sub:'E+ E− A− A+ ↔ load cell',pins:[['VCC','5V'],['GND','GND'],['DT','D3'],['SCK','D2']],note:'Load cell → HX711: merah E+, hitam E−, putih A−, hijau A+ (warna bisa berbeda, cek datasheet). Jika berat terbaca negatif, tukar A+ dan A−.'},
+ lib:'HX711 (Bogdan Necula / bogde)',
+ code:`#include <HX711.h>               // library: "HX711" by Bogdan Necula (bogde)
+const int PIN_DT = 3, PIN_SCK = 2;
+HX711 timbangan;
+float faktor = 420.0;              // count per gram (hasil kalibrasi)
+
+void setup() {
+  Serial.begin(9600);
+  timbangan.begin(PIN_DT, PIN_SCK);
+  Serial.println("Kosongkan timbangan, tare...");
+  delay(1000);
+  timbangan.set_scale(faktor);
+  timbangan.tare(20);              // nol-kan (rata-rata 20 sampel)
+  Serial.println("Siap. Ketik 'c' untuk kalibrasi dengan beban 1000 g.");
+}
+
+void loop() {
+  if (Serial.available() && Serial.read() == 'c') {
+    Serial.println("Letakkan beban acuan 1000 g, tunggu 5 s...");
+    delay(5000);
+    long raw = timbangan.get_value(20);      // sudah dikurangi tare
+    faktor = raw / 1000.0;
+    timbangan.set_scale(faktor);
+    Serial.print("Faktor kalibrasi baru = "); Serial.println(faktor);
+  }
+  float g = timbangan.get_units(10);
+  Serial.print("Berat="); Serial.print(g, 1); Serial.println(" g");
+  delay(300);
+}`,
+ rumus:`<p>V<sub>diff</sub> = S·V<sub>exc</sub>·(m/m<sub>maks</sub>), contohnya 1 mV/V × 4,3 V × (m/5 kg). Count = V<sub>diff</sub>·128/(0,5·AVDD)·2<sup>23</sup>. Kalibrasi praktis: <b>faktor = (raw<sub>beban</sub> − raw<sub>tare</sub>)/massa acuan</b>, lalu <b>massa = (raw − tare)/faktor</b>.</p>`,
+ masalah:['Nilai melayang (creep/drift): load cell belum dipasang kaku, atau perubahan suhu; tunggu stabil dan lakukan tare berkala.','Berat negatif: A+ dan A− tertukar.','Pembacaan 0 terus: DT/SCK tertukar atau modul tidak mendapat 5 V.'],
+ tugas:['Timbangan digital 0–5 kg dengan tombol tare dan LCD I2C.','Uji linearitas dengan 5 beban acuan, lalu hitung error % FS.','Ukur gaya dorong motor/baling-baling (thrust stand).'],
+ sim:{in:[{k:'m',l:'Beban',min:0,max:5000,step:1,u:'g',def:1250},{k:'fk',l:'Faktor kalibrasi di kode',min:380,max:460,step:0.5,u:'count/g',def:420}],
+  out:(s,nz)=>{const vd=1e-3*4.3*s.m/5000,cnt=Math.round(vd*128/(0.5*4.3)*Math.pow(2,23)+nz(60)),true_f=1e-3*4.3/5000*128/(2.15)*Math.pow(2,23),g=cnt/s.fk;
+   return{rows:[['V diferensial',fi(vd*1000,4)+' mV'],['Count (24 bit)',cnt+' = '+hex(cnt&0xFFFFFF,6)],['Faktor sebenarnya',fi(true_f,1)+' count/g'],['Berat terbaca',fi(g,1)+' g']],pins:[['D3 (DT)','data 24 bit'],['D2 (SCK)','25 pulsa']],ser:`Berat=${f(g,1)} g`,
+   wave:(()=>{const bits=bin(cnt&0xFFFFFF,24).split('').map(Number);const sck=[[0,0]],dt=[[0,1],[5,0]];let t=10;bits.forEach(b=>{sck.push([t,1]);dt.push([t,b]);sck.push([t+1,0]);t+=2});sck.push([t,1]);sck.push([t+1,0]);dt.push([t+2,1]);return{d:[{n:'SCK',e:sck,c:'--sig2'},{n:'DT',e:dt,c:'--sig1'}],t0:0,t1:t+6,unit:'µs (skala)'}})()}}}},
+
+{id:'max6675',nama:'MAX6675 + Termokopel K',sub:'Konverter termokopel tipe K ke SPI',cat:'digital',iface:'SPI (baca saja)',besaran:'Suhu tinggi',
+ stok:{ada:true,info:'K Type Thermocouple Sensor MAX6675, kode 6, 10 pcs, kotak 37'},
+ spec:[['Tegangan','3,0 – 5,5 V'],['Rentang','0 – 1023,75 °C'],['Resolusi','0,25 °C (12 bit)'],['Akurasi','±2 °C (0–700 °C)'],['Konversi','≈ 220 ms'],['Fitur','kompensasi sambungan dingin, deteksi termokopel terbuka']],
+ prinsip:`<p>Termokopel tipe K terdiri dari dua logam (chromel–alumel) yang disambung di ujung panas. Beda suhu antara ujung panas dan ujung dingin (terminal) menghasilkan tegangan kecil, sekitar <b>41 µV/°C</b> (efek Seebeck). MAX6675 menguatkan tegangan ini, mengukur suhu terminal dengan sensor internal (<b>cold junction compensation</b>), lalu mengeluarkan suhu absolut 12 bit.</p><p>Data dibaca lewat SPI satu arah: CS LOW, lalu 16 pulsa SCK. Bit D14–D3 berisi suhu (×0,25 °C), dan D2 = 1 berarti termokopel terbuka/putus.</p>`,
+ w:{mod:'MAX6675',sub:'+ termokopel K',pins:[['GND','GND'],['VCC','5V'],['SCK','D6'],['CS','D5'],['SO','D4']],note:'Termokopel: kabel merah = (−), biru/kuning = (+) pada standar ANSI. Bila suhu turun saat dipanaskan, polaritas terbalik.'},
+ lib:'MAX6675 library (Adafruit)',
+ code:`#include <max6675.h>             // library: "MAX6675 library" (Adafruit)
+const int PIN_SO = 4, PIN_CS = 5, PIN_SCK = 6;
+MAX6675 tc(PIN_SCK, PIN_CS, PIN_SO);
+
+void setup() {
+  Serial.begin(9600);
+  delay(500);                      // tunggu konversi pertama
+}
+
+void loop() {
+  float t = tc.readCelsius();
+  if (isnan(t)) {
+    Serial.println("Termokopel terbuka / tidak terpasang");
+  } else {
+    Serial.print("T="); Serial.print(t, 2); Serial.println(" C");
+  }
+  delay(250);                      // konversi +-220 ms
+}`,
+ rumus:`<p>Frame 16 bit: <b>T = ((data >> 3) & 0x0FFF) × 0,25 °C</b>; bit D2 = 1 → open. Tegangan termokopel kira-kira E ≈ 41,3 µV/°C × (T<sub>panas</sub> − T<sub>dingin</sub>); kurva sebenarnya sedikit nonlinear (tabel NIST ITS-90).</p>`,
+ masalah:['Selalu NaN: termokopel tidak terpasang (bit D2 = 1) atau terminal kendor.','Suhu turun saat dipanaskan: polaritas termokopel terbalik.','Nilai beku: dibaca lebih cepat dari 220 ms (konversi terhenti saat CS LOW).'],
+ tugas:['Kontrol oven/solder on-off atau PID dengan relay SSR.','Bandingkan MAX6675 dengan termometer acuan di air mendidih (±100 °C pada tekanan setempat).','Kurva pemanasan tungku, fit ke model orde satu.'],
+ sim:{in:[{k:'t',l:'Suhu ujung termokopel',min:0,max:1023,step:0.25,u:'°C',def:250.5},{k:'open',l:'Termokopel',opts:[[0,'terpasang'],[1,'terbuka/putus']],def:0}],
+  out:(s,nz)=>{const q=Math.round(s.t/0.25)&0xFFF,data=((q<<3)|(+s.open?4:0))&0xFFFF,T=+s.open?NaN:q*0.25,mv=s.t*0.0413;
+   const bits=bin(data,16).split('').map(Number),sck=[[0,0]],so=[[0,0]];let t=4;bits.forEach(b=>{sck.push([t,1]);so.push([t-1,b]);sck.push([t+1,0]);t+=2});so.push([t,0]);
+   return{rows:[['Tegangan Seebeck (≈)',fi(mv,3)+' mV'],['Frame 16 bit',bin(data,16).replace(/(\d{4})/g,'$1 ').trim()],['Hex',hex(data,4)],['Hasil',+s.open?'NaN (bit D2 = 1)':fi(T,2)+' °C']],pins:[['D4 (SO)','data'],['D5 (CS)','LOW saat baca'],['D6 (SCK)','16 pulsa']],ser:+s.open?'Termokopel terbuka / tidak terpasang':`T=${f(T)} C`,
+   wave:{d:[{n:'CS',e:[[0,1],[2,0],[t+1,1]],c:'--sig3'},{n:'SCK',e:sck,c:'--sig2'},{n:'SO',e:so,c:'--sig1'}],t0:0,t1:t+3,unit:'µs (skala)'}}}}}
+];
+
+
+/* ===== app ===== */
+const $=s=>document.querySelector(s);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const NZ=s=>s*gauss();
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const BYID={};SENSORS.forEach(s=>BYID[s.id]=s);
+const POWER=['5V','GND','3.3V','VIN'];
+function ifGroup(s){const i=s.iface;if(/I2C/.test(i))return'I2C';if(/1-Wire/.test(i))return'1-Wire';if(/UART/.test(i))return'UART';if(/SPI|Serial 2/.test(i))return'SPI / serial sinkron';if(/Interrupt|Pulsa/i.test(i))return'Pulsa / interrupt';if(/Analog/.test(i))return'Analog (ADC)';return'Digital I/O'}
+const pinSummary=s=>s.w.pins.filter(p=>!POWER.includes(p[1])).map(p=>p[0].replace(/ \(.*\)/,'')+'→'+p[1]).join(', ');
+
+/* ---------- theme ---------- */
+let theme=LS.get('ls_theme','auto');
+function applyTheme(){if(theme==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',theme);$('#themeBtn').textContent='Tema: '+({auto:'otomatis',light:'terang',dark:'gelap'})[theme]}
+$('#themeBtn').onclick=()=>{theme=theme==='auto'?'light':theme==='light'?'dark':'auto';LS.set('ls_theme',theme);applyTheme()};
+applyTheme();
+
+/* ---------- filters / nav ---------- */
+const F={q:'',cat:'all',ifg:'',stok:false};
+(function(){const gs=[...new Set(SENSORS.map(ifGroup))];$('#ifSel').innerHTML='<option value="">Semua antarmuka</option>'+gs.map(g=>`<option>${g}</option>`).join('')})();
+$('#q').oninput=e=>{F.q=e.target.value.toLowerCase();renderNav()};
+$('#ifSel').onchange=e=>{F.ifg=e.target.value;renderNav()};
+$('#stokOnly').onchange=e=>{F.stok=e.target.checked;renderNav()};
+document.querySelectorAll('#catChips .chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('#catChips .chip').forEach(x=>x.classList.toggle('on',x===b));F.cat=b.dataset.c;renderNav()});
+function match(s){if(F.cat!=='all'&&s.cat!==F.cat)return false;if(F.ifg&&ifGroup(s)!==F.ifg)return false;if(F.stok&&!s.stok.ada)return false;if(F.q){const h=(s.nama+' '+s.sub+' '+s.besaran+' '+s.iface+' '+pinSummary(s)).toLowerCase();return F.q.split(/\s+/).every(w=>h.includes(w))}return true}
+let cur={page:'dasar',tab:'sim'};
+function renderNav(){
+  const L=SENSORS.filter(match);let h=`<div class="special"><a href="#dasar" class="${cur.page==='dasar'?'on':''}"><span class="dot" style="background:var(--acc2)"></span><span class="nm">Dasar Arduino &amp; ADC</span></a><a href="#tabel" class="${cur.page==='tabel'?'on':''}"><span class="dot" style="background:var(--acc2)"></span><span class="nm">Tabel perbandingan</span></a></div>`;
+  ['analog','digital'].forEach(c=>{const g=L.filter(s=>s.cat===c);if(!g.length)return;h+=`<div class="grp">${c==='analog'?'Sensor analog':'Sensor digital'} (${g.length})</div>`;
+    g.forEach(s=>{h+=`<a href="#${s.id}" class="${cur.page===s.id?'on':''}" title="${esc(s.nama)}"><span class="dot ${s.stok.ada?'ok':''}"></span><span class="nm">${esc(s.nama)}</span><span class="if">${esc(ifShort(s))}</span></a>`})});
+  if(!L.length)h+='<div class="cnt">Tidak ada sensor yang cocok.</div>';
+  h+=`<div class="cnt">● hijau = ada di stok BHP</div>`;
+  $('#nav').innerHTML=h;
+}
+function ifShort(s){const g=ifGroup(s);return{'Analog (ADC)':'ADC','I2C':'I2C','1-Wire':'1W','UART':'UART','SPI / serial sinkron':'SPI','Pulsa / interrupt':'INT','Digital I/O':'DIO'}[g]}
+
+/* ---------- routing ---------- */
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));const [p,t]=h.split('/');
+  if(p&&(BYID[p]||p==='dasar'||p==='tabel')){cur.page=p;if(t&&['sim','wiring','prog','kal'].includes(t))cur.tab=t}
+  else cur.page=LS.get('ls_page','dasar');
+  if(!(BYID[cur.page]||cur.page==='dasar'||cur.page==='tabel'))cur.page='dasar';
+  LS.set('ls_page',cur.page);renderNav();renderMain();
+}
+function setHash(){const h='#'+cur.page+(BYID[cur.page]?'/'+cur.tab:'');try{history.replaceState(null,'',h)}catch(e){location.hash=h}}
+window.addEventListener('hashchange',route);
+
+/* ---------- sim state ---------- */
+const STATE={};
+function getState(sen){if(!STATE[sen.id]){const s={};sen.sim.in.forEach(i=>{if(!i.btn)s[i.k]=i.def});STATE[sen.id]={s,st:{},log:[],pause:false}}return STATE[sen.id]}
+function fmtIn(i,v){if(i.opts){const o=i.opts.find(o=>String(o[0])===String(v));return o?o[1]:v}let x=i.log?Math.pow(10,v):v;const d=i.log?(x<10?2:x<100?1:0):(i.step<0.01?4:i.step<0.1?2:i.step<1?1:0);return Number(x).toLocaleString('id-ID',{maximumFractionDigits:d,minimumFractionDigits:i.log?0:d})+(i.u?' '+i.u:'')}
+
+/* ---------- main render ---------- */
+let timer=null,lastOut=null;
+function renderMain(){
+  clearInterval(timer);timer=null;
+  const m=$('#main');
+  if(cur.page==='dasar'){m.innerHTML=dasarHTML();hl(m);window.scrollTo&&0;return}
+  if(cur.page==='tabel'){m.innerHTML=tabelHTML();m.querySelectorAll('tr.r').forEach(r=>r.onclick=()=>{location.hash='#'+r.dataset.id+'/sim'});return}
+  const s=BYID[cur.page];
+  m.innerHTML=`<div class="card">
+   <div class="shead"><div style="min-width:0;flex:1 1 320px"><h2>${esc(s.nama)}</h2><div class="sub">${esc(s.sub)}</div>
+     <div class="badges"><span class="bd ${s.cat==='analog'?'an':'dg'}">${s.cat==='analog'?'Analog':'Digital'}</span><span class="bd">${esc(s.iface)}</span><span class="bd">${esc(s.besaran)}</span>${s.lib?`<span class="bd">Library: ${esc(s.lib)}</span>`:'<span class="bd">Tanpa library</span>'}</div></div>
+     <div class="stok ${s.stok.ada?'ok':'no'}"><b>${s.stok.ada?'✓ Ada di stok BHP':'Tidak ada di stok BHP'}</b>${esc(s.stok.info)}</div></div>
+   <div class="tabs" role="tablist">${[['sim','Simulasi & Prinsip'],['wiring','Wiring'],['prog','Program'],['kal','Kalibrasi & Troubleshooting']].map(([k,l])=>`<button class="tab ${cur.tab===k?'on':''}" data-t="${k}" role="tab">${l}</button>`).join('')}</div>
+   <div id="pane"></div></div>`;
+  m.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{cur.tab=b.dataset.t;setHash();renderMain()});
+  const P=$('#pane');
+  if(cur.tab==='sim')renderSim(s,P);
+  else if(cur.tab==='wiring')P.innerHTML=wiringHTML(s);
+  else if(cur.tab==='prog'){P.innerHTML=progHTML(s);P.querySelector('#cpy').onclick=()=>copy(s.code,P.querySelector('#cpy'))}
+  else P.innerHTML=kalHTML(s);
+}
+
+function renderSim(s,P){
+  const S=getState(s);
+  const ctl=s.sim.in.map(i=>{
+    if(i.btn)return`<div class="ctl"><div class="lb"><span>${esc(i.l)}</span><span></span></div><button class="btn pri" type="button" data-btn="${i.k}" style="margin-top:4px;width:100%">${esc(i.btn)}</button></div>`;
+    if(i.opts)return`<div class="ctl"><div class="lb"><span>${esc(i.l)}</span><span></span></div><select data-k="${i.k}">${i.opts.map(o=>`<option value="${esc(o[0])}" ${String(o[0])===String(S.s[i.k])?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+    return`<div class="ctl"><div class="lb"><span>${esc(i.l)}</span><span data-v="${i.k}">${fmtIn(i,S.s[i.k])}</span></div><input type="range" data-k="${i.k}" min="${i.min}" max="${i.max}" step="${i.step}" value="${S.s[i.k]}" aria-label="${esc(i.l)}"></div>`}).join('');
+  P.innerHTML=`<div class="g2">
+    <div class="box"><h3>Masukan (kondisi fisik)</h3>${ctl}<h3 style="margin-top:14px">Pembacaan Arduino</h3><table class="kv" id="rows"></table><div class="pins" id="pins"></div></div>
+    <div class="box"><h3 id="visT">Visualisasi</h3><canvas id="vis"></canvas><div id="visX"></div><div class="cap" id="visCap"></div></div>
+   </div>
+   <div class="serial" style="margin-top:14px"><div class="bar"><b>Serial Monitor (simulasi)</b><span id="baud"></span><button type="button" id="sPause">${S.pause?'Lanjut':'Jeda'}</button><button type="button" id="sClr">Hapus</button></div><pre id="ser" aria-live="off"></pre></div>
+   <div class="g2" style="margin-top:14px"><div class="prose box"><h3>Prinsip kerja</h3>${s.prinsip}</div><div class="box"><h3>Spesifikasi ringkas</h3><table class="kv">${s.spec.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table></div></div>`;
+  $('#baud').textContent=(/Serial\.begin\((\d+)\)/.exec(s.code)||[0,'9600'])[1]+' baud';
+  P.querySelectorAll('input[type=range]').forEach(el=>el.oninput=()=>{const i=s.sim.in.find(x=>x.k===el.dataset.k);S.s[i.k]=+el.value;P.querySelector(`[data-v="${i.k}"]`).textContent=fmtIn(i,S.s[i.k]);tick(s,false)});
+  P.querySelectorAll('select[data-k]').forEach(el=>el.onchange=()=>{const i=s.sim.in.find(x=>x.k===el.dataset.k);const o=i.opts.find(o=>String(o[0])===el.value);S.s[i.k]=o?o[0]:el.value;tick(s,true)});
+  P.querySelectorAll('[data-btn]').forEach(el=>el.onclick=()=>{S.st.ev=S.st.ev||[];S.st.ev.push(performance.now()/1000);tick(s,true)});
+  $('#sPause').onclick=()=>{S.pause=!S.pause;$('#sPause').textContent=S.pause?'Lanjut':'Jeda'};
+  $('#sClr').onclick=()=>{S.log=[];drawSer(S)};
+  drawSer(S);tick(s,true);
+  timer=setInterval(()=>tick(s,true),500);
+}
+function tick(s,log){
+  if(!$('#rows'))return;
+  const S=getState(s);let o;
+  try{o=s.sim.out(S.s,NZ,S.st)}catch(e){console.error(e);return}
+  lastOut=o;
+  $('#rows').innerHTML=o.rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
+  $('#pins').innerHTML=(o.pins||[]).map(p=>`<span class="pin">${esc(p[0])}: <i>${esc(p[1])}</i></span>`).join('');
+  drawVis(o);
+  if(log&&!S.pause&&o.ser){const t=new Date(),ts=t.toTimeString().slice(0,8)+'.'+String(t.getMilliseconds()).padStart(3,'0');S.log.push([ts,o.ser]);if(S.log.length>200)S.log.splice(0,S.log.length-200);drawSer(S)}
+}
+function drawSer(S){const el=$('#ser');if(!el)return;const atB=el.scrollHeight-el.scrollTop-el.clientHeight<30;el.innerHTML=S.log.map(([t,l])=>`<span class="ts">${t} -&gt; </span>${esc(l)}`).join('\n');if(atB)el.scrollTop=el.scrollHeight}
+
+/* ---------- canvas visuals ---------- */
+function prep(cv,h){const dpr=window.devicePixelRatio||1,w=cv.clientWidth||cv.parentNode.clientWidth||300;cv.style.height=h+'px';cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.font='12px "JetBrains Mono",monospace';return{c,w,h}}
+const col=v=>v&&v.startsWith('--')?css(v):v;
+function drawVis(o){
+  const cv=$('#vis');if(!cv)return;const X=$('#visX'),cap=$('#visCap'),T=$('#visT');X.innerHTML='';cap.textContent='';cv.hidden=false;
+  if(o.wave){T.textContent=o.wave.d?'Diagram waktu sinyal digital':'Bentuk gelombang di pin analog';return o.wave.d?drawDig(cv,o.wave,cap):drawAna(cv,o.wave)}
+  if(o.curve){T.textContent='Kurva karakteristik sensor';return drawCurve(cv,o.curve)}
+  if(o.xy){T.textContent='Posisi tuas';return drawXY(cv,o.xy)}
+  if(o.line){T.textContent='Tampak atas: sensor di atas garis';return drawLine(cv,o.line)}
+  if(o.tilt){T.textContent='Orientasi modul';return drawTilt(cv,o.tilt)}
+  if(o.clock){T.textContent='Jam dari register RTC';return drawClock(cv,o.clock)}
+  if(o.mono){T.textContent='Data mentah UART dari GPS';cv.hidden=true;X.innerHTML=`<div class="mono-box">${esc(o.mono)}</div><div class="cap">Kalimat $GPGGA: waktu UTC, lintang, bujur, kualitas fix, jumlah satelit, HDOP, ketinggian. TinyGPS++ menguraikannya otomatis.</div>`;return}
+  if(o.bar){T.textContent='Nilai terukur';return drawBar(cv,o.bar)}
+  cv.hidden=true;
+}
+function axes(c,x0,y0,x1,y1){c.strokeStyle=css('--line');c.lineWidth=1;c.beginPath();c.moveTo(x0,y0);c.lineTo(x0,y1);c.lineTo(x1,y1);c.stroke()}
+function nice(v){if(v===0)return'0';return Math.abs(v)>=100?v.toFixed(0):Math.abs(v)>=10?v.toFixed(1):v.toFixed(2)}
+function drawBar(cv,b){const{c,w,h}=prep(cv,150);const p=Math.max(0,Math.min(1,b.v/b.max)),x0=16,x1=w-16,y=60,bh=28;
+  c.fillStyle=css('--line');roundRect(c,x0,y,x1-x0,bh,8);c.fill();c.fillStyle=css('--acc');roundRect(c,x0,y,Math.max(8,(x1-x0)*p),bh,8);c.fill();
+  c.fillStyle=css('--mute');c.textAlign='left';c.fillText('0',x0,y+bh+18);c.textAlign='right';c.fillText(String(b.max),x1,y+bh+18);c.textAlign='center';c.fillText(b.l,(x0+x1)/2,y+bh+18);
+  c.fillStyle=css('--ink');c.font='700 22px "JetBrains Mono",monospace';c.fillText(nice(b.v),(x0+x1)/2,y-16);}
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawAna(cv,W){const{c,w,h}=prep(cv,220);const L=44,R=w-10,Tp=12,B=h-28;axes(c,L,Tp,R,B);
+  const ys=v=>B-(v-W.ylo)/(W.yhi-W.ylo)*(B-Tp);c.fillStyle=css('--mute');c.textAlign='right';
+  for(let k=0;k<=5;k++){const v=W.ylo+(W.yhi-W.ylo)*k/5;c.fillText(v.toFixed(1),L-6,ys(v)+4);c.strokeStyle=css('--line');c.globalAlpha=.5;c.beginPath();c.moveTo(L,ys(v));c.lineTo(R,ys(v));c.stroke();c.globalAlpha=1}
+  for(let k=0;k<=5;k++){const t=W.t1*k/5;c.textAlign=k===5?'right':'center';c.fillText(nice(t)+(k===5?' '+W.unit:''),L+(R-L)*k/5,B+16)}
+  W.a.forEach(s=>{c.strokeStyle=col(s.c||'--sig1');c.lineWidth=2;c.beginPath();s.y.forEach((v,i)=>{const x=L+(R-L)*i/(s.y.length-1);i?c.lineTo(x,ys(v)):c.moveTo(x,ys(v))});c.stroke()});
+  c.textAlign='left';c.fillStyle=col(W.a[0].c);c.fillText(W.a[0].n,L+6,Tp+12);}
+function drawDig(cv,W,cap){const n=W.d.length,lane=46,{c,w,h}=prep(cv,n*lane+34);const L=62,R=w-10;const t0=W.t0||0,t1=W.t1,xs=t=>L+(t-t0)/(t1-t0)*(R-L);
+  W.d.forEach((ch,k)=>{const yb=12+k*lane+lane-14,yt=yb-24;c.fillStyle=css('--mute');c.textAlign='right';c.fillText(ch.n,L-8,yb-8);
+    c.strokeStyle=css('--line');c.lineWidth=1;c.setLineDash([3,3]);c.beginPath();c.moveTo(L,yb);c.lineTo(R,yb);c.stroke();c.setLineDash([]);
+    c.strokeStyle=col(ch.c||'--sig1');c.lineWidth=1.8;c.beginPath();let lv=ch.e.length?ch.e[0][1]:0,px=L;c.moveTo(L,lv?yt:yb);
+    for(const [t,l] of ch.e){if(t<t0)continue;if(t>t1)break;const x=xs(t);c.lineTo(x,lv?yt:yb);c.lineTo(x,l?yt:yb);lv=l;px=x}c.lineTo(R,lv?yt:yb);c.stroke()});
+  const yA=12+n*lane;c.fillStyle=css('--mute');for(let k=0;k<=5;k++){const t=t0+(t1-t0)*k/5;c.textAlign=k===5?'right':k===0?'left':'center';c.fillText(nice(t),xs(t),yA+4)}c.textAlign='right';c.fillText(W.unit,R,yA+18);
+  if(W.note)cap.textContent=W.note;else if(W.live)cap.textContent='Jendela 30 s terakhir, diperbarui setiap 0,5 s. Tekan tombol berulang kali untuk melihat perbedaan mode H dan L.';}
+function drawCurve(cv,C){const{c,w,h}=prep(cv,230);const L=44,R=w-12,Tp=12,B=h-30;const N=200,pts=[];let lo=Infinity,hi=-Infinity;for(let i=0;i<=N;i++){const x=C.x0+(C.x1-C.x0)*i/N,y=C.fn(x);pts.push([x,y]);lo=Math.min(lo,y);hi=Math.max(hi,y)}lo=Math.min(0,lo);hi=hi*1.08;
+  const xs=x=>L+(x-C.x0)/(C.x1-C.x0)*(R-L),ys=y=>B-(y-lo)/(hi-lo)*(B-Tp);axes(c,L,Tp,R,B);c.fillStyle=css('--mute');c.textAlign='right';for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4;c.fillText(v.toFixed(1),L-6,ys(v)+4)}c.textAlign='center';for(let k=0;k<=5;k++){const v=C.x0+(C.x1-C.x0)*k/5;c.fillText(nice(v),xs(v),B+16)}
+  c.textAlign='right';c.fillText(C.xl,R,B+28);c.textAlign='left';c.fillText(C.yl,L+4,Tp+10);
+  c.strokeStyle=css('--sig1');c.lineWidth=2;c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(xs(x),ys(y)):c.moveTo(xs(x),ys(y)));c.stroke();
+  const yv=C.fn(C.x);c.strokeStyle=css('--sig2');c.setLineDash([4,4]);c.lineWidth=1;c.beginPath();c.moveTo(xs(C.x),B);c.lineTo(xs(C.x),ys(yv));c.lineTo(L,ys(yv));c.stroke();c.setLineDash([]);c.fillStyle=css('--sig2');c.beginPath();c.arc(xs(C.x),ys(yv),5,0,7);c.fill();}
+function drawXY(cv,P){const{c,w,h}=prep(cv,230);const S=Math.min(w-20,h-20),x0=(w-S)/2,y0=(h-S)/2;c.strokeStyle=css('--line');c.lineWidth=1;c.strokeRect(x0,y0,S,S);c.beginPath();c.moveTo(x0+S/2,y0);c.lineTo(x0+S/2,y0+S);c.moveTo(x0,y0+S/2);c.lineTo(x0+S,y0+S/2);c.stroke();
+  c.setLineDash([3,3]);c.strokeRect(x0+S/2-S*0.025,y0+S/2-S*0.025,S*0.05,S*0.05);c.setLineDash([]);const px=x0+S/2+P.x/100*S/2,py=y0+S/2-P.y/100*S/2;c.fillStyle=css('--acc');c.beginPath();c.arc(px,py,10,0,7);c.fill();c.fillStyle=css('--mute');c.fillText('X',x0+S-12,y0+S/2-6);c.fillText('Y',x0+S/2+6,y0+12);}
+function drawLine(cv,Ln){const{c,w,h}=prep(cv,200);const mm=x=>w/2+x*(w-40)/130;c.fillStyle='#f3f1ea';c.fillRect(0,0,w,h);c.fillStyle='#151515';c.fillRect(mm(Ln.x-Ln.w/2),0,mm(Ln.x+Ln.w/2)-mm(Ln.x-Ln.w/2),h);
+  c.fillStyle='rgba(20,110,120,.85)';roundRect(c,mm(-38),70,mm(38)-mm(-38),60,10);c.fill();
+  Ln.bits.forEach((b,i)=>{const x=mm((i-2)*15);c.fillStyle=b?'#ff5a3c':'#d6e4e0';c.beginPath();c.arc(x,100,9,0,7);c.fill();c.fillStyle=Math.abs((i-2)*15-Ln.x)<Ln.w/2?'#fff':'#333';c.textAlign='center';c.fillText('S'+(i+1),x,148)});
+  c.fillStyle='#555';c.textAlign='left';c.fillText('lantai putih',8,16);c.textAlign='center';c.fillStyle='#fff';c.fillText('garis',mm(Ln.x),h-10);}
+function drawTilt(cv,T){const{c,w,h}=prep(cv,230);const r=Math.min(90,(h-30)/2),cx=w/2>r*2+40?w/4+10:w/2,cy=h/2;
+  c.strokeStyle=css('--line');c.lineWidth=2;c.beginPath();c.arc(cx,cy,r,0,7);c.stroke();c.beginPath();c.arc(cx,cy,r*0.12,0,7);c.stroke();c.beginPath();c.moveTo(cx-r,cy);c.lineTo(cx+r,cy);c.moveTo(cx,cy-r);c.lineTo(cx,cy+r);c.lineWidth=1;c.stroke();
+  const bx=cx+Math.sin(T.roll*Math.PI/180)*r*0.85,by=cy-Math.sin(T.pitch*Math.PI/180)*r*0.85;c.fillStyle=css('--acc');c.globalAlpha=.85;c.beginPath();c.arc(bx,by,r*0.14,0,7);c.fill();c.globalAlpha=1;c.fillStyle=css('--mute');c.textAlign='center';c.fillText('waterpass (roll, pitch)',cx,h-4);
+  if(w/2>r*2+40){const cx2=w*0.72,L=Math.min(w*0.22,120);c.save();c.translate(cx2,cy);c.rotate(-T.roll*Math.PI/180);c.fillStyle=css('--board');roundRect(c,-L,-14,2*L,28,6);c.fill();c.fillStyle='#fff';c.fillText('GY-9250',0,4);c.restore();c.strokeStyle=css('--line');c.setLineDash([4,4]);c.beginPath();c.moveTo(cx2-L-10,cy);c.lineTo(cx2+L+10,cy);c.stroke();c.setLineDash([]);c.fillStyle=css('--mute');c.fillText('tampak depan (roll)',cx2,h-4)}}
+function drawClock(cv,K){const{c,w,h}=prep(cv,230);const r=95,cx=w/2,cy=h/2;c.strokeStyle=css('--line');c.lineWidth=3;c.beginPath();c.arc(cx,cy,r,0,7);c.stroke();
+  for(let i=0;i<60;i++){const a=i/60*2*Math.PI,l=i%5?4:10;c.lineWidth=i%5?1:2;c.strokeStyle=css(i%5?'--line':'--mute');c.beginPath();c.moveTo(cx+Math.sin(a)*(r-4),cy-Math.cos(a)*(r-4));c.lineTo(cx+Math.sin(a)*(r-4-l),cy-Math.cos(a)*(r-4-l));c.stroke()}
+  const hand=(a,l,wd,cl)=>{c.strokeStyle=cl;c.lineWidth=wd;c.lineCap='round';c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.sin(a)*l,cy-Math.cos(a)*l);c.stroke()};
+  hand(((K.h%12)+K.m/60)/12*2*Math.PI,r*0.5,5,css('--ink'));hand((K.m+K.s/60)/60*2*Math.PI,r*0.75,3,css('--ink'));hand(K.s/60*2*Math.PI,r*0.85,1.5,css('--acc2'));c.lineCap='butt';}
+
+/* ---------- wiring SVG ---------- */
+const TOP=['SCL','SDA','AREF','GND','D13','D12','D11','D10','D9','D8',null,'D7','D6','D5','D4','D3','D2','D1','D0'];
+const BOT=['NC','IOREF','RST','3.3V','5V','GND','GND','VIN',null,'A0','A1','A2','A3','A4','A5'];
+function pinPos(){const P={};let x=104;TOP.forEach(n=>{if(n){(P[n]=P[n]||[]).push([x,112,'t'])}x+=17});x=150;BOT.forEach(n=>{if(n){(P[n]=P[n]||[]).push([x,298,'b'])}x+=17});return P}
+function wcol(u,mp){if(u==='5V'||u==='VIN')return'--w5v';if(u==='GND')return'--wgnd';if(u==='3.3V')return'--w33';if(/SDA/.test(mp)||u==='A4'&&/SDA/.test(mp))return'--wsda';if(/SCL/.test(mp))return'--wscl';if(u[0]==='A')return'--wa';return'--wd'}
+function wiringSVG(s){
+  const P=pinPos(),pins=s.w.pins,n=pins.length,mx=590,mw=130,py0=205-(n-1)*14,mh=(n-1)*28+56,my=py0-28;
+  let gndUsed=0;const used={};
+  const wires=pins.map((p,i)=>{const u=p[1];let cand=P[u]||[];let pos;if(u==='GND'){const g=[P.GND[1],P.GND[2],P.GND[0]];pos=g[gndUsed%3];gndUsed++}else pos=cand[0];return{i,mp:p[0],u,pos,y:py0+i*28,c:wcol(u,p[0])}});
+  const top=wires.filter(w=>w.pos&&w.pos[2]==='t').sort((a,b)=>b.pos[0]-a.pos[0]),bot=wires.filter(w=>w.pos&&w.pos[2]==='b').sort((a,b)=>b.pos[0]-a.pos[0]);
+  top.forEach((w,j)=>w.lane=96-j*9);bot.forEach((w,j)=>w.lane=316+j*9);
+  // vertical x: order by module y so verticals don't cross unnecessarily
+  wires.forEach(w=>{w.vx=0});const ups=top.slice().sort((a,b)=>a.y-b.y),dns=bot.slice().sort((a,b)=>b.y-a.y);
+  ups.forEach((w,k)=>w.vx=562-(top.length-1-top.indexOf(w))*0-k*0);
+  // simple: verticals for top wires: higher module pin (smaller y) -> closer to module? assign by lane order
+  top.forEach((w,j)=>w.vx=560-j*10);bot.forEach((w,j)=>w.vx=560-j*10-(top.length?5:0));
+  let g=`<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono,ui-monospace,monospace" role="img" aria-label="Diagram wiring ${esc(s.nama)} ke Arduino Uno">`;
+  // board
+  g+=`<rect x="40" y="110" width="400" height="200" rx="12" fill="var(--board)"/><rect x="40" y="110" width="400" height="200" rx="12" fill="none" stroke="var(--board2)" stroke-width="2"/>`;
+  g+=`<rect x="22" y="132" width="56" height="44" rx="4" fill="#b8bec3" stroke="#7e868c"/><text x="50" y="190" font-size="9" fill="var(--mute)" text-anchor="middle">USB</text>`;
+  g+=`<rect x="22" y="238" width="48" height="40" rx="4" fill="#222"/><text x="46" y="292" font-size="9" fill="var(--mute)" text-anchor="middle">DC 7–12V</text>`;
+  g+=`<rect x="230" y="210" width="150" height="34" rx="3" fill="#1d1f20"/><text x="305" y="231" font-size="10" fill="#cfd5d8" text-anchor="middle">ATmega328P</text>`;
+  g+=`<text x="230" y="190" font-size="20" font-weight="700" fill="#ffffff" font-family="Plus Jakarta Sans,system-ui,sans-serif">ARDUINO UNO</text>`;
+  g+=`<text x="300" y="160" font-size="9" fill="#cde8e6" text-anchor="middle">DIGITAL (PWM ~)</text><text x="330" y="268" font-size="9" fill="#cde8e6" text-anchor="middle">ANALOG IN</text><text x="205" y="268" font-size="9" fill="#cde8e6" text-anchor="middle">POWER</text>`;
+  const usedPins=new Set(wires.filter(w=>w.pos).map(w=>w.pos[0]+','+w.pos[1]));
+  const hdr=(arr,x0,y,lblY,rot)=>{let x=x0,o='';arr.forEach(n=>{if(n){const u=usedPins.has(x+','+y);o+=`<rect x="${x-6}" y="${y-6}" width="12" height="12" rx="2" fill="#16181a"/><circle cx="${x}" cy="${y}" r="3" fill="${u?'#ffd54a':'#555'}"/>`;
+    o+=`<text transform="translate(${x+3},${lblY}) rotate(-90)" font-size="8.5" fill="${u?'#ffffff':'#bfe1de'}" font-weight="${u?700:400}" text-anchor="${rot}">${n.replace(/^D(?=\d)/,'')}</text>`}x+=17});return o};
+  g+=hdr(TOP,104,112,124,'end')+hdr(BOT,150,298,286,'start');
+  // module
+  g+=`<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="10" fill="var(--panel)" stroke="var(--acc)" stroke-width="2"/>`;
+  g+=`<text x="${mx+mw/2}" y="${my-22}" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle" font-family="Plus Jakarta Sans,system-ui,sans-serif">${esc(s.w.mod)}</text><text x="${mx+mw/2}" y="${my-8}" font-size="9.5" fill="var(--mute)" text-anchor="middle">${esc(s.w.sub||'')}</text>`;
+  // wires
+  wires.forEach(w=>{if(!w.pos)return;const [px,py,side]=w.pos;const d=`M${mx} ${w.y} H${w.vx} V${w.lane} H${px} V${py}`;g+=`<path d="${d}" fill="none" stroke="var(${w.c})" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity=".95"/><circle cx="${px}" cy="${py}" r="3.4" fill="var(${w.c})"/>`});
+  wires.forEach(w=>{g+=`<circle cx="${mx}" cy="${w.y}" r="4" fill="var(${w.c})"/><text x="${mx+10}" y="${w.y+4}" font-size="10.5" fill="var(--ink)">${esc(w.mp)}</text>`});
+  if(s.w.res){const a=wires[s.w.res.a],b=wires[s.w.res.b],x=576,y1=Math.min(a.y,b.y),y2=Math.max(a.y,b.y);g+=`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="var(--ink)" stroke-width="1.5"/><rect x="${x-5}" y="${(y1+y2)/2-9}" width="10" height="18" fill="#e8d8b0" stroke="var(--ink)"/><circle cx="${x}" cy="${y1}" r="2.5" fill="var(--ink)"/><circle cx="${x}" cy="${y2}" r="2.5" fill="var(--ink)"/><text x="${x-9}" y="${(y1+y2)/2+4}" font-size="10" fill="var(--ink)" text-anchor="end">${esc(s.w.res.v)}</text>`}
+  return g+'</svg>';
+}
+const WDESC={'--w5v':'Catu 5 V','--wgnd':'Ground','--w33':'Catu 3,3 V','--wa':'Sinyal analog (ADC)','--wd':'Sinyal digital','--wsda':'I2C data (SDA)','--wscl':'I2C clock (SCL)'};
+function pinNote(u,mp){if(u==='A4')return'SDA I2C (juga header SDA dekat AREF)';if(u==='A5')return'SCL I2C (juga header SCL dekat AREF)';if(u==='D2')return'INT0, bisa interrupt';if(u==='D3')return'INT1 / PWM, bisa interrupt';if(/^D(5|6|9|10|11)$/.test(u))return'PWM ~';if(u[0]==='A')return'ADC 10 bit';if(u==='5V')return'maks ±400 mA dari USB';if(u==='3.3V')return'maks 50 mA';if(u==='GND')return'ground bersama';return'I/O digital'}
+function wiringHTML(s){const rows=s.w.pins.map(p=>{const c=wcol(p[1],p[0]);return`<tr><td><span class="sw" style="background:var(${c})"></span>${esc(p[0])}</td><td class="mono">${p[1]}</td><td>${WDESC[c]} · ${pinNote(p[1],p[0])}</td></tr>`}).join('');
+  return`<div class="wsvg">${wiringSVG(s)}</div><div class="cap">Kabel digambar dari pin modul ke header Arduino Uno. Pin kuning pada header = pin yang dipakai. Geser ke samping bila layar sempit.</div>
+  <table class="pt"><thead><tr><th>Pin modul</th><th>Pin Arduino Uno</th><th>Fungsi</th></tr></thead><tbody>${rows}</tbody></table>
+  ${s.w.note?`<div class="note${/220|Isolasi|!$/.test(s.w.note)&&/220|HATI|Isolasi/.test(s.w.note)?' warn':''}">${esc(s.w.note)}</div>`:''}
+  <div class="note"><b>Library:</b> ${s.lib?esc(s.lib)+' (Arduino IDE → Tools → Manage Libraries…)':'tidak perlu library tambahan'}</div>`}
+
+/* ---------- program ---------- */
+const KW=/\b(void|int|long|unsigned|float|double|bool|char|const|uint8_t|int16_t|uint16_t|uint32_t|byte|volatile|static|return|if|else|for|while|do|true|false|HIGH|LOW|INPUT|OUTPUT|INPUT_PULLUP|RISING|FALLING|CHANGE|PI|DEFAULT|INTERNAL|break|continue|sizeof)\b/;
+function hlC(src){const re=/(\/\/[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])')|(#\s*\w+)|\b(0x[0-9A-Fa-f]+|\d+(?:\.\d+)?(?:e-?\d+)?[UL]*)\b|\b([A-Za-z_]\w*)\b(?=\s*\()|\b([A-Za-z_]\w*)\b/g;let o='',last=0,m;
+  while((m=re.exec(src))){o+=esc(src.slice(last,m.index));const t=esc(m[0]);if(m[1])o+=`<span class="tk-c">${t}</span>`;else if(m[2])o+=`<span class="tk-s">${t}</span>`;else if(m[3])o+=`<span class="tk-p">${t}</span>`;else if(m[4])o+=`<span class="tk-n">${t}</span>`;else if(m[5])o+=KW.test(m[5])?`<span class="tk-k">${t}</span>`:`<span class="tk-f">${t}</span>`;else o+=KW.test(m[6])?`<span class="tk-k">${t}</span>`:t;last=re.lastIndex}return o+esc(src.slice(last))}
+function hl(root){root.querySelectorAll('pre.c').forEach(p=>{p.innerHTML=hlC(p.textContent)})}
+function progHTML(s){return`<div class="codewrap"><div class="cbar"><span>${esc(s.id)}.ino · Arduino Uno${s.lib?' · library: '+esc(s.lib):''}</span><button class="btn pri" id="cpy" type="button">Salin kode</button></div><pre>${hlC(s.code)}</pre></div>
+ <div class="g2" style="margin-top:14px"><div class="box"><h3>Langkah uji</h3><ul class="lst"><li>Rangkai sesuai tab <b>Wiring</b>, cek ulang polaritas catu sebelum USB dicolok.</li>${s.lib?`<li>Pasang library <b>${esc(s.lib)}</b> lewat Library Manager.</li>`:''}<li>Board: <i>Arduino Uno</i>, pilih port COM yang sesuai, lalu Upload.</li><li>Buka Serial Monitor pada baud <b>${(/Serial\.begin\((\d+)\)/.exec(s.code)||[0,'9600'])[1]}</b>. Keluaran yang diharapkan sama formatnya dengan Serial Monitor di tab Simulasi.</li></ul></div>
+ <div class="box"><h3>Contoh keluaran</h3><div class="mono-box" id="exOut">${esc((()=>{const S=getState(s);try{return s.sim.out(S.s,()=>0,S.st).ser||''}catch(e){return''}})())}</div><div class="cap">Dihasilkan dari kondisi masukan simulasi saat ini.</div></div></div>`}
+function copy(t,b){const done=()=>{b.textContent='Tersalin ✓';setTimeout(()=>b.textContent='Salin kode',1500)};try{navigator.clipboard.writeText(t).then(done,()=>fb())}catch(e){fb()}function fb(){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(e){}a.remove()}}
+
+/* ---------- kalibrasi ---------- */
+function kalHTML(s){return`<div class="g2"><div class="box prose"><h3>Rumus &amp; kalibrasi</h3>${s.rumus}</div><div class="box"><h3>Masalah umum &amp; solusi</h3><ul class="lst">${s.masalah.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>
+ <div class="box" style="margin-top:14px"><h3>Tugas praktikum</h3><ol class="lst" style="padding-left:20px;margin:0">${s.tugas.map(x=>`<li style="margin-bottom:6px">${esc(x)}</li>`).join('')}</ol></div>`}
+
+/* ---------- tabel ---------- */
+function tabelHTML(){return`<div class="card"><h2 style="margin:0 0 4px">Tabel perbandingan sensor</h2><p style="margin:0 0 12px;color:var(--mute)">Klik baris untuk membuka detail sensor. Stok dari STOK BHP.xlsx (Maret 2026).</p><div class="tblwrap"><table class="big"><thead><tr><th>Sensor</th><th>Jenis</th><th>Besaran</th><th>Antarmuka</th><th>Pin Arduino Uno</th><th>Library</th><th>Stok BHP</th></tr></thead><tbody>
+ ${SENSORS.map(s=>`<tr class="r" data-id="${s.id}"><td><b>${esc(s.nama)}</b></td><td>${s.cat==='analog'?'Analog':'Digital'}</td><td>${esc(s.besaran)}</td><td>${esc(s.iface)}</td><td class="mono" style="font-size:12px">${esc(pinSummary(s))}</td><td>${s.lib?esc(s.lib):'–'}</td><td class="${s.stok.ada?'yes':'nope'}">${s.stok.ada?'Ada':'Tidak'}</td></tr>`).join('')}</tbody></table></div>
+ <p class="cap">${SENSORS.filter(s=>s.stok.ada).length} dari ${SENSORS.length} sensor tersedia di stok. Belum ada: ${SENSORS.filter(s=>!s.stok.ada).map(s=>s.nama.split(' (')[0]).join(', ')}.</p></div>`}
+
+/* ---------- dasar ---------- */
+function dasarHTML(){return`<div class="card ref">
+<h2 style="margin:0 0 12px">Dasar Arduino Uno untuk membaca sensor</h2>
+<div class="g2"><div class="box prose"><h3>Sensor analog vs digital</h3><p><b>Sensor analog</b> mengeluarkan tegangan kontinu yang sebanding dengan besaran fisik. Arduino Uno membacanya dengan ADC 10 bit di pin A0–A5: <b>ADC = V·1023/V<sub>ref</sub></b>, dengan V<sub>ref</sub> default = 5 V, sehingga 1 langkah ≈ 4,89 mV.</p><p><b>Sensor digital</b> sudah mengubah hasil ukurnya menjadi data biner di dalam modul, lalu mengirimkannya lewat protokol: logika HIGH/LOW, lebar pulsa, frekuensi pulsa, 1-Wire, I2C, SPI, atau UART. Keuntungannya: tahan noise kabel dan biasanya sudah terkalibrasi pabrik.</p></div>
+<div class="box"><h3>Batas listrik Arduino Uno</h3><table class="kv"><tr><td>Tegangan I/O</td><td>0–5 V (jangan &gt; 5,5 V di pin mana pun)</td></tr><tr><td>Arus per pin I/O</td><td>20 mA disarankan, 40 mA maksimum absolut</td></tr><tr><td>Total arus semua I/O</td><td>≤ 200 mA</td></tr><tr><td>Pin 5V (dari USB)</td><td>±400 mA (dibatasi polyfuse 500 mA)</td></tr><tr><td>Pin 3.3V</td><td>±50 mA</td></tr><tr><td>Interrupt eksternal</td><td>D2 (INT0), D3 (INT1)</td></tr><tr><td>PWM</td><td>D3, D5, D6, D9, D10, D11</td></tr><tr><td>I2C</td><td>A4 = SDA, A5 = SCL</td></tr><tr><td>SPI</td><td>D10 SS, D11 MOSI, D12 MISO, D13 SCK</td></tr><tr><td>UART</td><td>D0 RX, D1 TX (dipakai USB)</td></tr><tr><td>analogRead</td><td>±112 µs per sampel (±8,9 kS/s)</td></tr></table></div></div>
+
+<h3>Kalkulator ADC</h3>
+<div class="box"><div class="g2"><div><div class="ctl"><div class="lb"><span>Tegangan masukan</span><span id="adcV"></span></div><input type="range" id="adcIn" min="0" max="5" step="0.001" value="2.5" aria-label="Tegangan masukan"></div><div class="ctl"><div class="lb"><span>V referensi</span><span></span></div><select id="adcRef"><option value="5">DEFAULT 5 V</option><option value="1.1">INTERNAL 1,1 V</option><option value="3.3">EXTERNAL 3,3 V (AREF)</option></select></div></div><table class="kv" id="adcOut"></table></div></div>
+
+<h3>Pull-up, aktif LOW, dan open collector</h3>
+<div class="g2"><div class="box prose"><p>Pin input yang tidak terhubung ke apa pun akan <b>mengambang</b> dan membaca 0/1 acak. Sakelar, tombol, dan output <b>open collector/open drain</b> (NJK-5002C, encoder LPD3806, YF-S201, 1-Wire, I2C) hanya bisa menarik ke GND, jadi perlu resistor <b>pull-up</b> ke 5 V. Arduino punya pull-up internal ±20–50 kΩ: <code>pinMode(pin, INPUT_PULLUP)</code>.</p><p>Akibatnya logika menjadi <b>aktif LOW</b>: LOW = ditekan/terdeteksi. Untuk kabel panjang atau bus cepat, pakai pull-up eksternal yang lebih kecil (4,7 kΩ untuk 1-Wire/I2C, 2,2 kΩ untuk encoder).</p></div>
+<div class="box prose"><h3>Modul 3,3 V di Arduino 5 V</h3><p>Banyak chip modern (BMP280, MPU9250, NEO-6M) bekerja pada 3,3 V. Modul "GY-" biasanya sudah membawa regulator dan pull-up, tetapi periksa dulu:</p><ul class="lst"><li>Ada regulator (IC 3 kaki 662K/LM6206) → VCC boleh 5 V.</li><li>Tidak ada regulator → VCC <b>wajib</b> 3,3 V.</li><li>Pin input modul yang menerima sinyal dari Arduino (RX GPS, SDA/SCL tanpa pull-up 3,3 V) → pakai level shifter atau pembagi 1 kΩ/2 kΩ.</li></ul></div></div>
+
+<h3>Program I2C scanner</h3>
+<p style="margin:0 0 8px;color:var(--mute);font-size:14px">Jalankan ini lebih dulu setiap kali memakai modul I2C untuk memastikan alamatnya (BMP280 0x76/0x77, MPU 0x68/0x69, BH1750 0x23, DS3231 0x68 + EEPROM 0x57).</p>
+<div class="codewrap"><div class="cbar"><span>i2c_scanner.ino</span><button class="btn pri" id="cpyScan" type="button">Salin kode</button></div><pre class="c">${esc(SCAN)}</pre></div>
+
+<h3>Tips praktikum</h3>
+<div class="g2"><div class="box"><ul class="lst"><li>Rata-ratakan 10–50 sampel analogRead untuk menekan noise; untuk sinyal AC hitung RMS, bukan rata-rata.</li><li>Ukur tegangan 5 V sebenarnya dengan multimeter. Tegangan USB sering 4,7–4,9 V, sehingga semua konversi tegangan bergeser.</li><li>Pisahkan catu motor/relay dari catu sensor; satukan hanya GND.</li></ul></div>
+<div class="box"><ul class="lst"><li>Jangan pakai <code>delay()</code> panjang bila ada interrupt atau banyak sensor; pakai pola <code>millis()</code>.</li><li>Variabel yang diubah di ISR harus <code>volatile</code> dan dibaca dengan <code>noInterrupts()</code>.</li><li>Catat hasil kalibrasi (titik, nilai acuan, alat acuan) di laporan praktikum.</li></ul></div></div>
+</div>`}
+const SCAN=`#include <Wire.h>
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  Serial.println("Memindai bus I2C...");
+  int n = 0;
+  for (uint8_t a = 1; a < 127; a++) {
+    Wire.beginTransmission(a);
+    if (Wire.endTransmission() == 0) {
+      Serial.print("Perangkat ditemukan di 0x");
+      if (a < 16) Serial.print('0');
+      Serial.println(a, HEX);
+      n++;
+    }
+  }
+  Serial.print(n); Serial.println(" perangkat.");
+}
+
+void loop() {}`;
+function bindDasar(){const i=$('#adcIn');if(!i)return;const up=()=>{const v=+i.value,r=+$('#adcRef').value,a=Math.max(0,Math.min(1023,Math.round(v/r*1023)));$('#adcV').textContent=v.toFixed(3)+' V';
+  $('#adcOut').innerHTML=`<tr><td>Nilai ADC</td><td>${a}${v>r?' (jenuh)':''}</td></tr><tr><td>Biner</td><td>${a.toString(2).padStart(10,'0')}</td></tr><tr><td>Resolusi</td><td>${(r/1023*1000).toFixed(2)} mV/langkah</td></tr><tr><td>Tegangan hasil kuantisasi</td><td>${(a*r/1023).toFixed(4)} V</td></tr><tr><td>Error kuantisasi</td><td>${((a*r/1023-Math.min(v,r))*1000).toFixed(2)} mV</td></tr>`};
+  i.oninput=up;$('#adcRef').onchange=up;up();$('#cpyScan').onclick=()=>copy(SCAN,$('#cpyScan'))}
+const _rm=renderMain;renderMain=function(){_rm();if(cur.page==='dasar')bindDasar()};
+
+/* redraw on theme / resize */
+new MutationObserver(()=>{if(lastOut&&$('#vis'))drawVis(lastOut)}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(lastOut&&$('#vis'))drawVis(lastOut)})}catch(e){}
+let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(lastOut&&$('#vis'))drawVis(lastOut)},120)});
+document.addEventListener('click',e=>{const a=e.target.closest('.nav a');if(a&&window.innerWidth<=900){setTimeout(()=>$('#main').scrollIntoView({behavior:'smooth',block:'start'}),30)}});
+route();
+</script>
